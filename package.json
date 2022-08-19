@@ -1,0 +1,39 @@
+{
+  "name": "profili-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "ts-node-dev --respawn src/app.ts",
+    "deploy": "tsc && node dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Major-Project-FY/profili-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Major-Project-FY/profili-backend/issues"
+  },
+  "homepage": "https://github.com/Major-Project-FY/profili-backend#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.5.2",
+    "postgres": "^3.2.4",
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.3",
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.7.6",
+    "nodemon": "^2.0.19",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0"
+  }
+}
