@@ -1,14 +1,14 @@
-import express from "express";
+import express, { Application, Request, Response } from "express";
 // import "dotenv";
 
-import userRouter from "./routes/user.routes"
+import userRouter from "./routes/user.routes";
 
 const port: number = 5000;
 
-const app = express();
+const app: Application = express();
 
-app.get("/app", (req: any) => {
-  req.name = "hello";
+app.get("/", (req: any, res: Response) => {
+  res.send("hello!");
 });
 
 app.listen(port, () => {
