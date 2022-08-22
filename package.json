@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "tsc": "tsc --watch",
     "start": "node dist/app.js",
-    "dev": "ts-node-dev --respawn src/app.ts",
+    "dev": "nodemon dist/app.js",
     "deploy": "tsc && node dist/app.js"
   },
   "repository": {
