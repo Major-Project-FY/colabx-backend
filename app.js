@@ -7,7 +7,7 @@ import { env } from "./config/config.js";
 import { log } from "./services/logger/color.logger.js";
 
 // initialization checks
-console.log()
+console.log();
 
 // initiating serevr
 console.log("\n****** Starting ColabX Backend ******\n");
@@ -30,17 +30,35 @@ if (env == "development") {
 const config = envStore;
 envStore = undefined;
 
-// DB imports
-import "./loaders/baseDB.init.js";
-log.green("✓ established connection with main DB")
-
 // server vars
 const port = config.port;
 const protocolType = config.protocol;
 const servingDomain = "127.0.0.1";
 
+// DB imports
+import { mainDB } from "./loaders/baseDB.init.js";
+log.green("✓ Established connection with main DB");
+
 // app vars
 const app = express();
+
+// importing routers
+import { router as authRouter } from "./routes/auth.routes.js";
+
+// using middlewares
+import cors from "cors";
+import morgan from "morgan";
+app.use(cors());
+app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+app.use(morgan("combined"));
+
+// using routers
+app.use("/auth", authRouter);
 
 // serving app
 app.listen(port, (error) => {

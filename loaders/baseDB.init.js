@@ -24,7 +24,7 @@ envStore = undefined;
 // importing modules
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize(
+export const mainDB = new Sequelize(
   config.database,
   config.username,
   config.password,
@@ -32,8 +32,8 @@ const sequelize = new Sequelize(
     host: config.host,
     dialect: config.dialect,
     port: Number(config.port),
-    // logging: env == "production" ? false: console.log,
-    logging: false,
+    logging: env == "development" ? console.log : false,
+    // logging: console.log,
   }
 );
 
@@ -52,7 +52,7 @@ const sequelize = new Sequelize(
 //   });
 
 try {
-  await sequelize.authenticate();
+  await mainDB.authenticate();
   // "hello".bye = 1000;
   // console.log("connected to database successfully");
 } catch (error) {
