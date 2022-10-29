@@ -38,6 +38,9 @@ import { Sequelize } from "sequelize";
 // );
 
 console.log(config);
+console.log(
+  `${config.dialect}://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`
+);
 
 export const mainDB = new Sequelize(
   // config.database,
