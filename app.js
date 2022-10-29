@@ -7,7 +7,7 @@ import { env } from "./config/config.js";
 import { log } from "./services/logger/color.logger.js";
 
 // initialization checks
-console.log();
+// console.log();
 
 // initiating serevr
 console.log("\n****** Starting ColabX Backend ******\n");

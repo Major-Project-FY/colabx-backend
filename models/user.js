@@ -1,57 +1,31 @@
-// "use strict";
-// import { Model } from "sequelize";
-
-// export default (sequelize, DataTypes) => {
-//   class User extends Model {
-//     /**
-//      * Helper method for defining associations.
-//      * This method is not a part of Sequelize lifecycle.
-//      * The `models/index` file will call this method automatically.
-//      */
-//     static associate(models) {
-//       // define association here
-//     }
-//   }
-//   User.init(
-//     {
-//       first_name: DataTypes.STRING,
-//       lastname: DataTypes.STRING,
-//       email: DataTypes.STRING,
-//       password: DataTypes.STRING,
-//       user_id: DataTypes.UUID,
-//       last_login: DataTypes.DATE,
-//       last_ip_address: DataTypes.STRING,
-//     },
-//     {
-//       sequelize,
-//       modelName: "User",
-//     }
-//   );
-//   return User;
-// };
-
 import { Sequelize, DataTypes } from "sequelize";
 import { mainDB } from "../loaders/baseDB.init.js";
 
 const sequelize = new Sequelize("postgres::memory:");
 
 export const User = mainDB.define(
-  "user_accounts",
+  "users",
   {
     // Model attributes are defined here
-    firstName: {
+    id: {
+      allowNull: false,
+      type: Sequelize.UUID,
+      defaultValue: Sequelize.literal("gen_random_uuid()"),
+      primaryKey: true,
+    },
+    first_name: {
+      allowNull: false,
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lastName: {
+    last_name: {
       type: DataTypes.STRING,
       // allowNull defaults to true
     },
-    // email: { type: DataTypes.STRING },
-    // password: { type: DataTypes.STRING },
-    // user_id: { type: DataTypes.UUID },
-    // last_login: { type: DataTypes.DATE },
-    // last_ip_address: { type: DataTypes.STRING },
+    email: { allowNull: false, type: DataTypes.STRING, unique: true },
+    password: { allowNull: false, type: DataTypes.STRING },
+    last_login: { allowNull: false, type: DataTypes.DATE },
+    last_ip_address: { type: DataTypes.STRING },
   },
   {
     // Other model options go here
@@ -59,7 +33,7 @@ export const User = mainDB.define(
   }
 );
 
-// User.sync({ force: true });
+User.sync({ force: true });
 
 // `sequelize.define` also returns the model
-console.log(User === sequelize.models.User); // true
+// console.log(User === sequelize.models.User); // true

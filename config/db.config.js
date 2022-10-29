@@ -9,15 +9,6 @@ export const development = {
   dialect: "postgres",
 };
 
-// export const development = {
-//   username: "mayuresh",
-//   password: "mayuresh",
-//   database: "colax-dev",
-//   host: "127.0.0.1",
-//   port: 5432,
-//   dialect: "postgres",
-// };
-
 export const test = {
   username: "root",
   password: null,

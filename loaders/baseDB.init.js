@@ -24,32 +24,34 @@ envStore = undefined;
 // importing modules
 import { Sequelize } from "sequelize";
 
+// export const mainDB = new Sequelize(
+//   config.database,
+//   config.username,
+//   config.password,
+//   {
+//     host: config.host,
+//     dialect: config.dialect,
+//     port: Number(config.port),
+//     logging: env == "development" ? console.log : false,
+//     // logging: console.log,
+//   }
+// );
+
+console.log(config);
+
 export const mainDB = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
+  // config.database,
+  // config.username,
+  // config.password,
+  `${config.dialect}://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`,
   {
-    host: config.host,
+    // host: config.host,
     dialect: config.dialect,
     port: Number(config.port),
     logging: env == "development" ? console.log : false,
     // logging: console.log,
   }
 );
-
-// sequelize
-//   .authenticate()
-//   .then((connection) => {
-//     console.log("connection", connection);
-//     if (connection) {
-//       console.log("Connection has been established successfully.");
-//     } else {
-//       console.error("Unable to connect to the database:");
-//     }
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
 
 try {
   await mainDB.authenticate();

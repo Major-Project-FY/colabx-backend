@@ -2,13 +2,13 @@
 import { Router } from "express";
 
 // importing controllers
-import { userSignup } from "../controllers/auth.controllers.js";
+import { userSignup, userlogin } from "../controllers/auth.controllers.js";
 
 // creating router
 export const router = Router();
 
 // Auth routes
-// router.post("/user/login");
+router.post("/user/login", userlogin);
 router.post("/user/signup", userSignup);
 
 // OAuth routes
