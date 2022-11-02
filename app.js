@@ -1,28 +1,28 @@
 // imports
-import express from "express";
-import "dotenv/config";
+import express from 'express';
+import 'dotenv/config';
 
 // required imports
-import { env } from "./config/config.js";
-import { log } from "./services/logger/color.logger.js";
+import { env } from './config/config.js';
+import { log } from './services/logger/color.logger.js';
 
 // initialization checks
 // console.log();
 
 // initiating serevr
-console.log("\n****** Starting ColabX Backend ******\n");
+console.log('\n****** Starting ColabX Backend ******\n');
 
 let envStore;
 
-if (env == "development") {
-  envStore = (await import("./config/config.js")).development;
-} else if (env == "production") {
-  envStore = (await import("./config/config.js")).production;
-} else if (env == "test") {
-  envStore = (await import("./config/config.js")).test;
+if (env == 'development') {
+  envStore = (await import('./config/config.js')).development;
+} else if (env == 'production') {
+  envStore = (await import('./config/config.js')).production;
+} else if (env == 'test') {
+  envStore = (await import('./config/config.js')).test;
 } else {
-  log.red("✗ no env argument provided");
-  console.log("\nserevr will now exit ...\n");
+  log.red('✗ no env argument provided');
+  console.log('\nserevr will now exit ...\n');
   process.exit(-1);
 }
 
@@ -33,21 +33,21 @@ envStore = undefined;
 // server vars
 const port = config.port;
 const protocolType = config.protocol;
-const servingDomain = "127.0.0.1";
+const servingDomain = '127.0.0.1';
 
 // DB imports
-import { mainDB } from "./loaders/baseDB.init.js";
-log.green("✓ Established connection with main DB");
+import { mainDB } from './loaders/baseDB.init.js';
+log.green('✓ Established connection with main DB');
 
 // app vars
 const app = express();
 
 // importing routers
-import { router as authRouter } from "./routes/auth.routes.js";
+import { router as authRouter } from './routes/auth.routes.js';
 
 // using middlewares
-import cors from "cors";
-import morgan from "morgan";
+import cors from 'cors';
+import morgan from 'morgan';
 app.use(cors());
 app.use(express.json());
 app.use(
@@ -55,10 +55,10 @@ app.use(
     extended: true,
   })
 );
-app.use(morgan("combined"));
+app.use(morgan('combined'));
 
 // using routers
-app.use("/auth", authRouter);
+app.use('/auth', authRouter);
 
 // serving app
 app.listen(port, (error) => {
@@ -68,7 +68,7 @@ app.listen(port, (error) => {
     log.green(`✓ Server started at port ${port}`);
     console.log(
       `\nYou can access apis at ${protocolType}://${servingDomain}:${port}/`,
-      "\nReady to listen for APIs \n"
+      '\nReady to listen for APIs \n'
     );
   }
 });

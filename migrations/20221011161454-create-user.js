@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 export async function up(queryInterface, Sequelize) {
-  await queryInterface.createTable("Users", {
+  await queryInterface.createTable('Users', {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -39,5 +39,5 @@ export async function up(queryInterface, Sequelize) {
   });
 }
 export async function down(queryInterface, Sequelize) {
-  await queryInterface.dropTable("Users");
+  await queryInterface.dropTable('Users');
 }

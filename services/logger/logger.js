@@ -1,4 +1,4 @@
-import { text } from "./color.logger.js";
+import { text } from './color.logger.js';
 
 export const successLog = (text, part) => {
   console.log(

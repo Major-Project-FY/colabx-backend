@@ -1,16 +1,16 @@
-import { Sequelize, DataTypes } from "sequelize";
-import { mainDB } from "../loaders/baseDB.init.js";
+import { Sequelize, DataTypes } from 'sequelize';
+import { mainDB } from '../loaders/baseDB.init.js';
 
-const sequelize = new Sequelize("postgres::memory:");
+const sequelize = new Sequelize('postgres::memory:');
 
 export const User = mainDB.define(
-  "users",
+  'users',
   {
     // Model attributes are defined here
     id: {
       allowNull: false,
       type: Sequelize.UUID,
-      defaultValue: Sequelize.literal("gen_random_uuid()"),
+      defaultValue: Sequelize.literal('gen_random_uuid()'),
       primaryKey: true,
     },
     first_name: {
