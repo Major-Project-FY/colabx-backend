@@ -6,12 +6,15 @@ import { Op } from 'sequelize';
 
 // importing helper functions
 import { currentDate } from '../utils/basic.utils.js';
+import '../services/essential/mailer.service.js';
 
 // importing utils
 import { log } from '../services/logger/color.logger.js';
 import { successLog } from '../services/logger/logger.js';
 
 // console.log("user", User);
+
+export const signupVerifyEmail = async (req, res, next) => {};
 
 export const userSignup = async (req, res, next) => {
   console.log('inside user signup');

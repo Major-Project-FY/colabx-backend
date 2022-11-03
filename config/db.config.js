@@ -1,6 +1,7 @@
 import 'dotenv/config';
 
 export const development = {
+  // database vars
   username: process.env.DEV_MAIN_DB_USER,
   password: process.env.DEV_MAIN_DB_PASSWORD,
   database: process.env.DEV_MAIN_DB_NAME,
@@ -8,6 +9,13 @@ export const development = {
   port: process.env.DEV_MAIN_DB_PORT,
   dialect: 'postgres',
   protocol: 'postgres',
+
+  // OAuth vars
+  googleOAuthClientID: process.env.DEV_GOOGLE_OAUTH_CLIENT_ID,
+  googleOAuthClientSecret: process.env.DEV_GOOGLE_OAUTH_CLIENT_SECRET,
+
+  // configuration vars
+  hostType: process.env.DEV_SERVER_TYPE,
 };
 
 export const test = {
