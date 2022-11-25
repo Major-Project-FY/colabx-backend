@@ -10,12 +10,9 @@ export const development = {
   dialect: 'postgres',
   protocol: 'postgres',
 
-  // OAuth vars
-  googleOAuthClientID: process.env.DEV_GOOGLE_OAUTH_CLIENT_ID,
-  googleOAuthClientSecret: process.env.DEV_GOOGLE_OAUTH_CLIENT_SECRET,
-
-  // configuration vars
-  hostType: process.env.DEV_SERVER_TYPE,
+  secondary: {
+    uri: process.env.DEV_SECONDARY_DB_URI,
+  },
 };
 
 export const test = {

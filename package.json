@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
+    "start": "node app.js development",
     "dev": "nodemon app.js development",
     "test": "echo \"testing script\""
   },
@@ -28,7 +28,8 @@
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "googleapis": "^109.0.0",
-    "mongoose": "^6.6.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.7.3",
     "morgan": "^1.10.0",
     "nodemailer": "^6.8.0",
     "pg": "^8.8.0",
