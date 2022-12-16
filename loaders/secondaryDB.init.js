@@ -26,7 +26,10 @@ mongoose
   .then(() => {
     // console.log('connected to mongodb');
   })
-  .catch();
+  .catch((error) => {
+    console.log(error);
+    serverExit('unable to establish connection with main database');
+  });
 
 mongoose.connection.on('connection', () => {
   console.log('database connected');

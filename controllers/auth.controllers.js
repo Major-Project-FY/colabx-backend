@@ -13,10 +13,11 @@ import { sendServiceMail } from '../services/essential/mailer.service.js';
 import { checkUserExistByEmail } from '../utils/auth/auth.utils.js';
 import { MailerOptions } from '../utils/basic/mail.utils.js';
 import { createToken } from '../utils/auth/token.utils.js';
+import { hashPassword } from '../utils/auth/crypto.utils.js';
 
 // importing utils
 import { log } from '../services/logger/color.logger.js';
-import { successLog } from '../services/logger/logger.js';
+import { successLog, warningLog } from '../services/logger/logger.js';
 
 ///////////////// all initial imports ends here /////////////////
 
@@ -32,6 +33,7 @@ export const signupVerifyEmail = async (req, res, next) => {
   const user = new signupUser({
     signupEmail: req.body.userEmail,
     userOTP: otp,
+    userIP: req.socket.remoteAddress,
   });
 
   // saving new signup user
@@ -55,7 +57,7 @@ export const signupVerifyEmail = async (req, res, next) => {
       res.cookie(
         'signup verification',
         createToken({
-          signupUserEmail: res.cookie.userEmail,
+          signupUserEmail: req.body.userEmail,
         }),
         {
           httpOnly: true,
@@ -83,23 +85,45 @@ export const signupVerifyEmail = async (req, res, next) => {
 };
 
 export const signupVerifyEmailOTP = async (req, res, next) => {
-  
+  // console.log(res.locals.user);
+  const recievedOTP = req.body.userOTP;
+  const result = await signupUser.find({
+    signupEmail: res.locals.user.signupUserEmail,
+  });
+  console.log(result[0].userOTP, recievedOTP);
+  if (result.length && result[0].userOTP == recievedOTP) {
+    console.log('equal');
+    res.status(200).json({ status: 'success' });
+  } else {
+    console.log('not equal');
+    res.status(400).json({ status: 'failed' });
+  }
+  // try {
+  // } catch (error) {
+  //  warningLog("User Signup", "error while reading otp")
+  // }
 };
 
 export const userSignup = async (req, res, next) => {
+  const hashedPassword = await hashPassword(req.body.userPassword);
+  delete req.body.userPassword;
+  console.log(hashedPassword);
   console.log('inside user signup');
   console.log('IP:', req.socket.remoteAddress);
   User.create({
-    first_name: 'Mayuresh',
-    last_name: 'Shinde',
-    email: 'mvshinde640@gmail.com',
-    password: 'password',
+    first_name: req.body.firstName,
+    last_name: req.body.lastName,
+    email: req.body.userEmail,
+    password: hashedPassword,
     last_login: currentDate(),
     last_ip_address: req.socket.remoteAddress,
   })
     .then((result) => {
       console.log("Jane's auto-generated ID:", result.id);
-      res.status(200).json(jane).send();
+      res
+        .status(200)
+        .json({ status: 'success', msg: 'user signup sucessful' })
+        .send();
       successLog(
         'User Signup',
         `user ${email} has successfully signed up with IP Address ${req.socket.remoteAddress}`
@@ -108,7 +132,7 @@ export const userSignup = async (req, res, next) => {
     .catch((err) => {
       const result = { success: false, err: err.message };
       console.error(err.original);
-      if (err.original.code && err.original.code == '23505') {
+      if (err.original && err.original.code && err.original.code == '23505') {
         result.msg = 'same email ID already exists';
       } else {
         result.msg = 'something went wrong';

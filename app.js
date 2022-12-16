@@ -1,33 +1,15 @@
-// imports
+// module imports
 import express from 'express';
-import 'dotenv/config';
+import cookieParser from 'cookie-parser';
 
-// required imports
-import { env } from './config/config.js';
+// importing config
+import { config } from './config/config.js';
+
+// importing logger
 import { log } from './services/logger/color.logger.js';
-import { serverExit } from './services/logger/logger.js';
-
-// initialization checks
-// console.log();
 
 // initiating serevr
 console.log('\n****** Starting ColabX Backend ******\n');
-
-let envStore;
-
-if (env == 'development') {
-  envStore = (await import('./config/config.js')).development;
-} else if (env == 'production') {
-  envStore = (await import('./config/config.js')).production;
-} else if (env == 'test') {
-  envStore = (await import('./config/config.js')).test;
-} else {
-  serverExit('no env argument provided');
-}
-
-// assigning config
-const config = envStore;
-envStore = undefined;
 
 // server vars
 const port = config.port;
@@ -56,6 +38,7 @@ app.use(
     extended: true,
   })
 );
+app.use(cookieParser());
 app.use(morgan('combined'));
 
 // using routers

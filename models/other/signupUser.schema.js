@@ -6,6 +6,8 @@ const signupUserSchema = new Schema(
   {
     signupEmail: { type: String },
     userOTP: { type: String },
+    verifiedEmail: { type: Boolean },
+    userIP: { type: String },
   },
   { timestamps: true }
 );

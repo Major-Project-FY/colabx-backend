@@ -1,3 +1,5 @@
+'use strict';
+
 import 'dotenv/config';
 
 export const env = process.argv[2];
