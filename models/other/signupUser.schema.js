@@ -4,7 +4,7 @@ import { model, Schema } from 'mongoose';
 // defining signup user schema
 const signupUserSchema = new Schema(
   {
-    signupEmail: { type: String },
+    signupEmail: { type: String, unique: true },
     userOTP: { type: String },
     verifiedEmail: { type: Boolean },
     userIP: { type: String },

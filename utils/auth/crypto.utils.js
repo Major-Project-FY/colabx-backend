@@ -24,3 +24,14 @@ export const hashPassword = (userPassword) => {
     });
   });
 };
+
+// helper function to compare passwords
+export const comparePassword = (currentPassword, hashedPassword) => {
+  return new Promise((resolve, reject) => {
+    if (currentPassword === hashedPassword) {
+      return resolve(true);
+    } else {
+      return reject(false);
+    }
+  });
+};
