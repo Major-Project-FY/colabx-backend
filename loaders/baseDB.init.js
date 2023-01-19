@@ -24,20 +24,29 @@ envStore = undefined;
 // importing modules
 import { Sequelize } from 'sequelize';
 
+const connectionString = `${config.dialect}://${config.username}:${config.password}@${config.host}/${config.database}`;
+// config.hostType == 'render'
+//   ? `${config.dialect}://${config.username}:${config.password}@${config.host}/${config.database}`
+//   : `${config.dialect}://${config.username}:${config.password}@${config.host}/${config.database}`;
+
+let dialectOptions;
+if (config.hostType == 'render') {
+  dialectOptions = {}
+} else if (config.hostType) {
+  
+}
+
 // creating main DB connection config
-export const mainDB = new Sequelize(
-  `${config.dialect}://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`,
-  {
-    dialect: config.dialect,
-    port: Number(config.port),
-    protocol: config.protocol,
-    logging: env == 'development' ? console.log : false,
-    dialectOptions:
-      config.hostType == 'server'
-        ? {}
-        : { ssl: true, native: true, rejectUnauthorized: false },
-  }
-);
+export const mainDB = new Sequelize(connectionString, {
+  dialect: config.dialect,
+  port: Number(config.port),
+  protocol: config.protocol,
+  logging: env == 'development' ? console.log : false,
+  dialectOptions: { ssl: true, native: true, rejectUnauthorized: false },
+  // dialectOptions: config.hostType == 'render'
+  //   ? { ssl: true, native: true, rejectUnauthorized: false }
+  //   : {},
+});
 
 // connecting to main DB
 try {
