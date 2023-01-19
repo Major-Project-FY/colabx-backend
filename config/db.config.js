@@ -9,6 +9,7 @@ export const development = {
   port: process.env.DEV_MAIN_DB_PORT,
   dialect: 'postgres',
   protocol: 'postgres',
+  hostType: process.env.DEV_HOST_TYPE,
 
   secondary: {
     uri: process.env.DEV_SECONDARY_DB_URI,
