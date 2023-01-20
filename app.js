@@ -44,6 +44,12 @@ app.use(morgan('combined'));
 // using routers
 app.use('/auth', authRouter);
 
+// default route
+app.use('/', (req, res) => {
+  // redirecting default backend route to frontend homepage
+  res.redirect(`https://${config.frontendDomain}`);
+});
+
 // serving app
 app.listen(port, (error) => {
   if (error) {

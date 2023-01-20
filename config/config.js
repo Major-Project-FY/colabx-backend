@@ -12,6 +12,9 @@ export const development = {
   tokenSecret: process.env.DEV_TOKEN_SECRET,
   port: process.env.DEV_BACKEND_PORT,
 
+  // other config vars
+  frontendDomain: process.env.DEV_FRONTEND_DOMAIN,
+
   // OAuth vars
   googleOAuthClientID: process.env.DEV_GOOGLE_OAUTH_CLIENT_ID,
   googleOAuthClientSecret: process.env.DEV_GOOGLE_OAUTH_CLIENT_SECRET,

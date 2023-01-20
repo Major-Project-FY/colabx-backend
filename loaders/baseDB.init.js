@@ -29,12 +29,11 @@ const connectionString = `${config.dialect}://${config.username}:${config.passwo
 //   ? `${config.dialect}://${config.username}:${config.password}@${config.host}/${config.database}`
 //   : `${config.dialect}://${config.username}:${config.password}@${config.host}/${config.database}`;
 
-let dialectOptions;
-if (config.hostType == 'render') {
-  dialectOptions = {}
-} else if (config.hostType) {
-  
-}
+// let dialectOptions;
+// if (config.hostType == 'render') {
+//   dialectOptions = {}
+// } else if (config.hostType) {
+// }
 
 // creating main DB connection config
 export const mainDB = new Sequelize(connectionString, {
