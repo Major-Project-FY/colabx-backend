@@ -33,7 +33,7 @@ export const User = mainDB.define(
   }
 );
 
-// User.sync({ force: true });
+User.sync({ force: true });
 
 // `sequelize.define` also returns the model
 // console.log(User === sequelize.models.User); // true
