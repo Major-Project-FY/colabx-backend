@@ -46,9 +46,9 @@ export const checkSignupUser = (req, res, next) => {
     } else {
       errorLog(
         'User Signup',
-        'token not found for user with ip address ${req.socket.remoteAddress}'
+        `token not found for user with ip address ${req.socket.remoteAddress}`
       );
-      console.log('token not found');
+      // console.log('token not found');
       res.status(401).json({
         success: false,
         err: 'invalid session',

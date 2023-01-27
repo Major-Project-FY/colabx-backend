@@ -13,7 +13,7 @@ import { sendServiceMail } from '../services/essential/mailer.service.js';
 import { checkUserExistByEmail } from '../utils/auth/auth.utils.js';
 import { MailerOptions } from '../utils/basic/mail.utils.js';
 import { createToken } from '../utils/auth/token.utils.js';
-import { hashPassword } from '../utils/auth/crypto.utils.js';
+import { hashPassword, comparePassword } from '../utils/auth/crypto.utils.js';
 
 // importing utils
 import { log } from '../services/logger/color.logger.js';
@@ -26,63 +26,69 @@ const signupCookieMaxAge = 1000 * 60 * 20; // that's 20 mins
 
 // initial signup API for user verification
 export const signupVerifyEmail = async (req, res, next) => {
-  // genarating OTP
-  const otp = getOTP();
+  try {
+    // genarating OTP
+    const otp = getOTP();
 
-  // creating new signup user
-  const user = new signupUser({
-    signupEmail: req.body.userEmail,
-    userOTP: otp,
-    userIP: req.socket.remoteAddress,
-    verifiedEmail: false,
-  });
-
-  // saving new signup user
-  user.save().catch((err) => {
-    throw err;
-  });
-
-  // creating mail options
-  const mailerOptions = new MailerOptions(
-    req.body.userEmail,
-    `CollabX signup verification`,
-    `
-        <h1>${otp}</h1>
-      `
-  );
-
-  // sending service mail
-  sendServiceMail(mailerOptions)
-    .then((result) => {
-      // creating cookie after sending mail
-      res.cookie(
-        'signup verification',
-        createToken({
-          signupUserEmail: req.body.userEmail,
-        }),
-        {
-          httpOnly: true,
-          maxAge: signupCookieMaxAge,
-        }
-      );
-
-      // sending response to client
-      res.status(200).json({ status: true, msg: 'mail sent to user' }).send();
-
-      // logging result
-      successLog(
-        'User Signup',
-        `otp email has successfully sent to user with IP Address ${req.socket.remoteAddress}`
-      );
-    })
-    .catch((error) => {
-      // throwing error when occured
-      throw error;
+    // creating new signup user
+    const user = new signupUser({
+      signupEmail: req.body.userEmail,
+      userOTP: otp,
+      userIP: req.socket.remoteAddress,
+      verifiedEmail: false,
     });
-  // try {
-  // } catch (error) {
-  //   console.log(error);
-  // }
+
+    // saving new signup user
+    user.save().catch((err) => {
+      throw err;
+    });
+
+    // creating mail options
+    const mailerOptions = new MailerOptions(
+      req.body.userEmail,
+      `CollabX Signup Verification`,
+      `
+          <h1>${otp}</h1>
+        `
+    );
+
+    // sending service mail
+    sendServiceMail(mailerOptions)
+      .then((result) => {
+        // creating cookie after sending mail
+        res.cookie(
+          'signup verification',
+          createToken({
+            signupUserEmail: req.body.userEmail,
+          }),
+          {
+            httpOnly: true,
+            maxAge: signupCookieMaxAge,
+          }
+        );
+
+        // sending response to client
+        res.status(200).json({ status: true, msg: 'mail sent to user' }).send();
+
+        // logging result
+        successLog(
+          'User Signup',
+          `otp email has successfully sent to user with IP Address ${req.socket.remoteAddress}`
+        );
+      })
+      .catch((error) => {
+        // throwing error when occured
+        throw error;
+      });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({
+        status: 'unsuccessful',
+      })
+      .send();
+  }
 };
 
 export const signupVerifyEmailOTP = async (req, res, next) => {
@@ -127,64 +133,121 @@ export const signupVerifyEmailOTP = async (req, res, next) => {
 
 // API for user signup
 export const userSignup = async (req, res, next) => {
-  // verifying user exist in the signup database
-  const verifyResult = await signupUser.find({
-    signupEmail: res.locals.user.signupUserEmail,
-  });
+  // upper try catch
+  try {
+    // verifying user exist in the signup database
+    const verifyResult = await signupUser.find({
+      signupEmail: res.locals.user.signupUserEmail,
+    });
 
-  // validating the results
-  if (verifyResult.length == 1 && verifyResult[0].verifiedEmail) {
-    const hashedPassword = await hashPassword(req.body.userPassword);
-    delete req.body.userPassword;
-    console.log(hashedPassword);
-    console.log('inside user signup');
-    console.log('IP:', req.socket.remoteAddress);
+    // validating the results
+    if (verifyResult.length == 1 && verifyResult[0].verifiedEmail) {
+      const hashedPassword = await hashPassword(req.body.userPassword);
+      delete req.body.userPassword;
+      console.log(hashedPassword);
+      console.log('inside user signup');
+      console.log('IP:', req.socket.remoteAddress);
 
-    // creatig the user
-    User.create({
-      first_name: req.body.firstName,
-      last_name: req.body.lastName,
-      email: req.body.userEmail,
-      password: hashedPassword,
-      last_login: currentDate(),
-      last_ip_address: req.socket.remoteAddress,
-    })
-      .then((result) => {
-        // console.log("Jane's auto-generated ID:", result.id);
-
-        // updating session cookies
-        res.clearCookie('signup verification');
-
-        //---> sending signup resposne <---//
-        res
-          .status(200)
-          .json({ status: 'success', msg: 'user signup sucessful' })
-          .send();
-        successLog(
-          'User Signup',
-          `user ${email} has successfully signed up with IP Address ${req.socket.remoteAddress}`
-        );
+      // creatig the user
+      User.create({
+        first_name: req.body.firstName,
+        last_name: req.body.lastName,
+        email: req.body.userEmail,
+        password: hashedPassword,
+        last_login: currentDate(),
+        last_ip_address: req.socket.remoteAddress,
       })
-      .catch((err) => {
-        // checking type of error
-        var result = { success: false };
-        console.error(err.original);
-        if (err.original && err.original.code && err.original.code == '23505') {
-          result.msg = 'same email ID already exists';
-        } else {
-          result.msg = 'something went wrong';
-        }
+        .then((result) => {
+          // updating session cookies
+          res.clearCookie('signup verification');
 
-        // sending error response
-        res.status(500).json(result);
+          successLog(
+            'User Signup',
+            `user with emailID ${req.body.userEmail} added into the database`
+          );
+
+          //---> sending signup completion resposne <---//
+
+          res
+            .status(200)
+            .json({ status: 'success', msg: 'user signup sucessful' });
+          // .send();
+          successLog(
+            'User Signup',
+            `user ${req.body.userEmail} has successfully signed up with IP Address ${req.socket.remoteAddress}`
+          );
+        })
+        .catch((err) => {
+          // checking type of error
+
+          // console.error(err.original);
+          if (
+            err.original &&
+            err.original.code &&
+            err.original.code == '23505'
+          ) {
+            const error = new Error('same email ID already exists');
+            error.code = 'SIGNUP-ALRDYEXIST';
+            throw error;
+          } else {
+            // this error will occur when some error occures during execution
+            // of this query
+
+            throw err;
+          }
+
+          // sending error response
+        });
+    } else {
+      // this condition will execute when signupuser is not found in database
+
+      const err = new Error('signup user not found in signup user database');
+      err.code = 'SIGNUP-USRNOTFOUND';
+      throw err;
+    }
+  } catch (error) {
+    // checking, logging and sending response accordingly on type of errors
+
+    // checking for type of errors based on error codes
+    if (error.code == 'SIGNUP-USRNOTFOUND') {
+      // sending response when signup user doesn't exist in the database
+
+      warningLog(
+        'User Signup',
+        `user ${res.locals.user.signupUserEmail} not found in signup user database`
+      );
+      res.status(403).json({ status: 'failed', msg: 'not allowed' });
+    } else if (error.code == 'SIGNUP-ALRDYEXIST') {
+      // displaying warning and responding when existing user trying to signup
+
+      warningLog(
+        'User Signup',
+        `user ${res.locals.user.signupUserEmail} with ip ${req.socket.remoteAddress} already exists in database`
+      );
+
+      //--> sending response when user with give emailID already exists <--//
+      res
+        .status(403)
+        .json({
+          status: 'unsuccessful',
+          msg: 'user already exists',
+        })
+        .send();
+    } else {
+      // logging and sending response when some undefined execution error
+      // occures
+
+      warningLog(
+        'User Signup',
+        `something went wrong while signing up user ${res.locals.user.signupUserEmail} with ip ${req.socket.remoteAddress}`
+      );
+
+      //--> sending response when some undefined error occured <--//
+      res.status(500).json({
+        status: 'unsuccessful',
+        msg: 'something went wrong while signing up the user',
       });
-  } else {
-    // sending response when signup user doesn't exist in the database
-    warningLog(
-      'User Signup',
-      `user ${res.locals.user.signupUserEmail} not found in signup user database`
-    );
-    res.status(403).json({ status: 'failed', msg: 'not allowed' });
+    }
   }
 };
 
@@ -217,25 +280,36 @@ export const userlogin = async (req, res, next) => {
       );
       throw error;
     }
-
     // checking when sequelize executed query successfully
     if (toFindUser.length) {
       // when there is some results with given email IDs
+
+      const passwordComparisonResponse = comparePassword(
+        req.body.password,
+        toFindUser[0].dataValues.userOriginalPassword
+      );
+      if (passwordComparisonResponse === true) {
+        //---> sending response for successful authentication <---//
+        res
+          .status(200)
+          .json({
+            status: 'successful',
+            msg: 'successfully logged in the user',
+          })
+          .send();
+      } else {
+        // when passwords compared are invalid
+        throw passwordComparisonResponse;
+      }
     } else {
       // when given email ID is not in the databse
 
       // throwing user not found error
-      const err = new Error('user not found');
+      const err = new Error('User not found');
       err.code = 'LOGIN-USRNOTFOUND';
-      warningLog(
-        'User Login',
-        `Login credentials didn't matched for client requesting from ${req.socket.remoteAddress}`
-      );
+
       throw err;
     }
-
-    //---> sending response for successful authentication <---//
-    res.status(200).json(toFindUser).send();
   } catch (error) {
     // checking for type of error
 
@@ -246,6 +320,17 @@ export const userlogin = async (req, res, next) => {
       res.status(404).json({
         status: 'unsuccessful',
         msg: 'User does not exists',
+      });
+    } else if (error.code === 'LOGIN-INCRCTUSRCRED') {
+      console.log('inside incorrect user cred try catch');
+      warningLog(
+        'User Login',
+        `Login credentials didn't matched for client requesting from ${req.socket.remoteAddress}`
+      );
+      log.red(`\n! ${error.message}\n`);
+      res.status(403).json({
+        status: 'unsuccessful',
+        msg: 'Invalid credentials recieved',
       });
     } else {
       // sending response for server issue

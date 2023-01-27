@@ -1,5 +1,5 @@
 // module imports
-import { genSalt, hash } from 'bcrypt';
+import { genSalt, hash, compare } from 'bcrypt';
 
 // helper function for hashing user passwords
 export const hashPassword = (userPassword) => {
@@ -27,11 +27,20 @@ export const hashPassword = (userPassword) => {
 
 // helper function to compare passwords
 export const comparePassword = (currentPassword, hashedPassword) => {
-  return new Promise((resolve, reject) => {
-    if (currentPassword === hashedPassword) {
-      return resolve(true);
-    } else {
-      return reject(false);
+  try {
+    try {
+      console.log(currentPassword, hashedPassword);
+      const compairedResult = compare(currentPassword, hashedPassword);
+      if (compairedResult) {
+        return true;
+      }
+    } catch (error) {
+      throw error;
     }
-  });
+    const err = new Error('Incorrect credentials recieved');
+    err.code = 'LOGIN-INCRCTUSRCRED';
+    return err;
+  } catch (error) {
+    return error;
+  }
 };

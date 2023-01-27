@@ -41,7 +41,11 @@ export const mainDB = new Sequelize(connectionString, {
   port: Number(config.port),
   protocol: config.protocol,
   logging: env == 'development' ? console.log : false,
-  dialectOptions: { ssl: true, native: true, rejectUnauthorized: false },
+  dialectOptions: {
+    ssl: true,
+    native: true,
+    rejectUnauthorized: false,
+  },
   // dialectOptions: config.hostType == 'render'
   //   ? { ssl: true, native: true, rejectUnauthorized: false }
   //   : {},

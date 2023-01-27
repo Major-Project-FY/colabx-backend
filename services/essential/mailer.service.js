@@ -33,6 +33,7 @@ export const sendServiceMail = async (mailerOptions) => {
           refreshToken: config.mailerRefershToken,
           accessToken: accessToken,
         },
+        tls: { rejectUnauthorized: false },
       };
       const transporter = createTransport(nodemailerOptions);
       transporter
@@ -46,6 +47,7 @@ export const sendServiceMail = async (mailerOptions) => {
         });
     } catch (error) {
       console.log(error);
+      reject(error);
     }
   });
 };
