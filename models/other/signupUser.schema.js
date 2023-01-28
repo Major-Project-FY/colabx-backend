@@ -12,7 +12,7 @@ const signupUserSchema = new Schema(
   { timestamps: true }
 );
 
-signupUserSchema.index({ createdAt: 1 }, { expireAfterSeconds: 300 });
+signupUserSchema.index({ createdAt: 1 }, { expireAfterSeconds: 5000 });
 
 // exporting schema
 export const signupUser = model('signupUsers', signupUserSchema);
