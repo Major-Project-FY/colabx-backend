@@ -25,6 +25,10 @@ export const development = {
 
   // mailer options vars
   mailerEmailID: process.env.DEV_MAILER_EMAIL_ID,
+
+  // github OAuth vars
+  githubClientID: process.env.DEV_GITHUB_CLIENT_ID,
+  githubClientSecret: process.env.DEV_GITHUB_CLIENT_SECRET,
 };
 
 export const test = {
