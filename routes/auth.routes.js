@@ -9,6 +9,11 @@ import {
   signupVerifyEmailOTP,
 } from '../controllers/auth.controllers.js';
 
+import {
+  sendGitHubAuthLink,
+  authorizeGitHubUser,
+} from '../controllers/integrations.controllers.js';
+
 // importing middlewares
 import { checkSignupUser } from '../middlewares/auth/signupUser.js';
 
@@ -23,5 +28,9 @@ router.post('/user/signup/verify-otp', checkSignupUser, signupVerifyEmailOTP);
 
 // OAuth routes
 // router.post("/google");
-// router.post("/github");
+
+router.get('/github', sendGitHubAuthLink);
+router.post('/github/authorize', authorizeGitHubUser);
+
+
 // router.post("/linkedin");

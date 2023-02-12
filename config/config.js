@@ -23,12 +23,13 @@ export const development = {
   mailerAuthCode: process.env.DEV_MAILER_OAUTH_AUTHORIZATION_CODE,
   mailerRefershToken: process.env.DEV_MAILER_OAUTH_REFRESH_TOKEN,
 
-  // mailer options vars
+  // mgithubRedirectURLailer options vars
   mailerEmailID: process.env.DEV_MAILER_EMAIL_ID,
 
   // github OAuth vars
   githubClientID: process.env.DEV_GITHUB_CLIENT_ID,
   githubClientSecret: process.env.DEV_GITHUB_CLIENT_SECRET,
+  githubRedirectURL: process.env.DEV_GITHUB_REDIRECT_URL,
 };
 
 export const test = {

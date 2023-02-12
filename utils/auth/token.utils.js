@@ -13,5 +13,12 @@ export const createToken = (content) => {
   return token;
 };
 
+export const createTokenWithExpiresIn = (content, expiresIn) => {
+  const token = jwt.sign(content, tokenSecret, {
+    expiresIn: expiresIn,
+  });
+  return token;
+};
+
 // this function revokes a token
 export const revokeToken = () => {};
