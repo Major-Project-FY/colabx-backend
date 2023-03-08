@@ -8,11 +8,12 @@ const signupUserSchema = new Schema(
     userOTP: { type: String },
     verifiedEmail: { type: Boolean },
     userIP: { type: String },
+    createdAt: { type: Date, expires: 300, default: Date.now }
   },
   { timestamps: true }
 );
 
-signupUserSchema.index({ createdAt: 1 }, { expireAfterSeconds: 5000 });
+// signupUserSchema.index({ expireAfterSeconds: 5000 });
 
 // exporting schema
-export const signupUser = model('signupUsers', signupUserSchema);
+export const signupUser = model('signup users', signupUserSchema);

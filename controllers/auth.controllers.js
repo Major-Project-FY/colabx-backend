@@ -144,9 +144,6 @@ export const userSignup = async (req, res, next) => {
     if (verifyResult.length == 1 && verifyResult[0].verifiedEmail) {
       const hashedPassword = await hashPassword(req.body.userPassword);
       delete req.body.userPassword;
-      console.log(hashedPassword);
-      console.log('inside user signup');
-      console.log('IP:', req.socket.remoteAddress);
 
       // creatig the user
       User.create({
@@ -154,6 +151,7 @@ export const userSignup = async (req, res, next) => {
         last_name: req.body.lastName,
         email: req.body.userEmail,
         password: hashedPassword,
+        signed_up_through: 'DEFAULT',
         last_login: currentDate(),
         last_ip_address: req.socket.remoteAddress,
       })
