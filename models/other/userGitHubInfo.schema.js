@@ -4,9 +4,9 @@ import { model, Schema } from 'mongoose';
 // defining signup user schema
 const userGitHubInfoSchema = new Schema(
   {
-    userID: { type: String, unique: true },
-    email: { type: String, unique: true },
-    gitHubUsername: { type: String, unique: true },
+    userID: { type: String, unique: true, require: true },
+    email: { type: String, unique: true, require: true },
+    gitHubUsername: { type: String, unique: true, require: true },
     gitHubAvatarUrl: { type: String },
     url: { type: String },
     type: { type: String },

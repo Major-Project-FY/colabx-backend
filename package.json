@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js development",
+    "start": "node --stack-size=8192 app.js development",
     "dev": "nodemon app.js development",
     "test": "echo \"testing script\""
   },

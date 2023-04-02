@@ -38,10 +38,5 @@ router.post('/user/send-email');
 
 router.get('/github', sendGitHubAuthLink);
 router.post('/github/authorize', authorizeGitHubUser);
-router.post(
-  '/github/send-user-email',
-  checkSignUpGitHubUser,
-  getUserEmailforGithub
-);
 
 // router.post("/linkedin");

@@ -10,6 +10,7 @@ import { config } from '../config/config.js';
 
 // importing utils
 import {} from '../utils/auth/integration.utils.js';
+import { checkUserExistByEmail } from '../utils/auth/auth.utils.js';
 import { createTokenWithExpiresIn } from '../utils/auth/token.utils.js';
 import { warningLog } from '../services/logger/logger.js';
 import { log } from '../services/logger/color.logger.js';
@@ -112,7 +113,7 @@ export const authorizeGitHubUser = async (req, res, next) => {
                   'X-GitHub-Api-Version': '2022-11-28',
                 },
               })
-                .then((emailResponse) => {
+                .then(async (emailResponse) => {
                   // checking for user primary email
                   for (let i in emailResponse.data) {
                     if (emailResponse.data[i].primary) {
@@ -121,78 +122,107 @@ export const authorizeGitHubUser = async (req, res, next) => {
                     }
                   }
 
-                  // processing user's name from GitHub's name
-                  const nameSplit = response.data.name.split(' ');
-                  let userFirstName = 'None';
-                  let userLastName = '';
-                  if (nameSplit.length > 0) {
-                    if (nameSplit.length == 1) {
-                      userFirstName = nameSplit[0];
-                    } else {
-                      userFirstName = nameSplit[0];
-                      userLastName = nameSplit[nameSplit.length - 1];
-                    }
-                  }
-
-                  // creating CollabX user with recieved information
-                  User.create({
-                    first_name: userFirstName,
-                    last_name: userLastName,
-                    email: userEmail,
-                    password: null,
-                    signed_up_through: 'GITHUB',
-                    last_login: currentDate(),
-                    last_ip_address: req.socket.remoteAddress,
-                  })
-                    .then(async (userCreateResult) => {
-                      // creating new github user info object with collected data
-                      const newGitHubUser = new gitHubUserInfo({
-                        gitHubUsername: response.data.login,
-                        email: userEmail,
-                        gitHubAvatarUrl: response.data.avatar_url,
-                        url: response.data.url,
-                        type: response.data.type,
-                        name: response.data.name,
-                        company: response.data.company,
-                        location: response.data.location,
-                        twitterUsername: response.data.twitter_username,
-                        publicRepos: response.data.public_repos,
-                        publicGists: response.data.public_gists,
-                        followers: response.data.followers,
-                        following: response.data.following,
-                        privateGists: response.data.private_gists,
-                        totalPrivateRepos: response.data.total_private_repos,
-                        ownedPrivateRepos: response.data.owned_private_repos,
-                        collaborators: response.data.collaborators,
-                        twoFactorAuthentication:
-                          response.data.two_factor_authentication,
-                      });
-
-                      // asynchronously saving user's data
-                      try {
-                        await newGitHubUser.save();
-                      } catch (error) {
-                        throw error;
+                  // check if user already there in the database
+                  console.log(userEmail);
+                  const userCheckResult = await checkUserExistByEmail(
+                    userEmail
+                  );
+                  if (userCheckResult === false) {
+                    // processing user's name from GitHub's name
+                    const nameSplit = response.data.name.split(' ');
+                    let userFirstName = 'None';
+                    let userLastName = '';
+                    if (nameSplit.length > 0) {
+                      if (nameSplit.length == 1) {
+                        userFirstName = nameSplit[0];
+                      } else {
+                        userFirstName = nameSplit[0];
+                        userLastName = nameSplit[nameSplit.length - 1];
                       }
+                    }
 
-                      // creating session cookie
-                      res.cookie(
-                        's-gh',
-                        createTokenWithExpiresIn(result, '2h'),
-                        {
-                          httpOnly: true,
-                          maxAge: gitHubCookieMaxAge,
-                        }
-                      );
-
-                      // sending response back to client
-                      res.status(200).json({ status: 'successful' });
+                    // creating CollabX user with recieved information
+                    User.create({
+                      first_name: userFirstName,
+                      last_name: userLastName,
+                      email: userEmail,
+                      password: null,
+                      signed_up_through: 'GITHUB',
+                      last_login: currentDate(),
+                      last_ip_address: req.socket.remoteAddress,
                     })
-                    .catch((err) => {
-                      // catching error when unable to create CollabX user
-                      err.code = 'OAUTH-GITHUBNOUSRCREATE';
-                      throw err;
+                      .then(async (userCreateResult) => {
+                        // console.log('create user results', userCreateResult.dataValues);
+                        result.userID = userCreateResult.dataValues.id;
+
+                        // creating new github user info object with collected data
+                        const newGitHubUser = new gitHubUserInfo({
+                          userID: userCreateResult.dataValues.id,
+                          gitHubUsername: response.data.login,
+                          email: userEmail,
+                          gitHubAvatarUrl: response.data.avatar_url,
+                          url: response.data.url,
+                          type: response.data.type,
+                          name: response.data.name,
+                          company: response.data.company,
+                          location: response.data.location,
+                          twitterUsername: response.data.twitter_username,
+                          publicRepos: response.data.public_repos,
+                          publicGists: response.data.public_gists,
+                          followers: response.data.followers,
+                          following: response.data.following,
+                          privateGists: response.data.private_gists,
+                          totalPrivateRepos: response.data.total_private_repos,
+                          ownedPrivateRepos: response.data.owned_private_repos,
+                          collaborators: response.data.collaborators,
+                          twoFactorAuthentication:
+                            response.data.two_factor_authentication,
+                        });
+
+                        // asynchronously saving user's data
+                        try {
+                          await newGitHubUser.save();
+                        } catch (error) {
+                          throw error;
+                        }
+
+                        // creating session cookie
+                        res.cookie(
+                          'st',
+                          createTokenWithExpiresIn(result, '48h'),
+                          {
+                            httpOnly: true,
+                            maxAge: gitHubCookieMaxAge,
+                          }
+                        );
+
+                        // sending response back to client
+                        res.status(200).json({ status: 'successful' });
+                      })
+                      .catch((err) => {
+                        // catching error when unable to create CollabX user
+                        err.code = 'OAUTH-GITHUBNOUSRCREATE';
+                        throw err;
+                      });
+                  } else if (userCheckResult) {
+                    console.log(
+                      'userCheckResult',
+                      userCheckResult.rows[0].dataValues.userID
+                    );
+                    result.userID = userCheckResult.rows[0].dataValues.userID;
+                    console.log('result', result);
+
+                    // creating session cookie
+                    res.cookie('st', createTokenWithExpiresIn(result, '48h'), {
+                      httpOnly: true,
+                      maxAge: gitHubCookieMaxAge,
                     });
+
+                    // sending response back to client
+                    res.status(200).json({ status: 'successful' });
+                  } else {
+                    console.log('currentlly nothing here');
+                  }
                 })
                 .catch((err) => {
                   // catching error for not getting emailID of user from GitHub

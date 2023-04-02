@@ -27,6 +27,7 @@ const app = express();
 
 // importing routers
 import { router as authRouter } from './routes/auth.routes.js';
+import { router as userRouter } from './routes/user.routes.js';
 
 // using middlewares
 import cors from 'cors';
@@ -43,6 +44,7 @@ app.use(morgan('combined'));
 
 // using routers
 app.use('/auth', authRouter);
+app.use('/user', userRouter);
 
 // default route
 app.use('/', (req, res) => {
