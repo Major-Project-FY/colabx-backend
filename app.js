@@ -31,10 +31,10 @@ const app = express();
 import { router as authRouter } from './routes/auth.routes.js';
 import { router as userRouter } from './routes/user.routes.js';
 
-const options = {
-  key: fs.readFileSync('./config/keys/cert.key'),
-  cert: fs.readFileSync('./config/keys/cert.crt'),
-};
+// const options = {
+//   key: fs.readFileSync('./config/keys/cert.key'),
+//   cert: fs.readFileSync('./config/keys/cert.crt'),
+// };
 
 // using middlewares
 import cors from 'cors';
