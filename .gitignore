@@ -9,3 +9,6 @@ dist/
 
 # yarn
 yarn-error.log
+
+# others
+config/keys/
