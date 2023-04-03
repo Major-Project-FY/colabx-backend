@@ -60,20 +60,7 @@ app.use('/', (req, res) => {
 });
 
 // serving app
-// app.listen(port, (error) => {
-//   if (error) {
-//     log.red(`* unable to start serevr at port ${port} *`);
-//   } else {
-//     log.green(`✓ Started server at port ${port}`);
-//     console.log(
-//       `\nYou can access apis at ${protocolType}://${servingDomain}:${port}/`,
-//       '\nReady to listen for APIs \n'
-//     );
-//   }
-// });
-
-https.createServer(options, app).listen(port, (error) => {
-  // console.log(`HTTPS server started on port 8080`);
+app.listen(port, (error) => {
   if (error) {
     log.red(`* unable to start serevr at port ${port} *`);
   } else {
@@ -83,6 +70,19 @@ https.createServer(options, app).listen(port, (error) => {
       '\nReady to listen for APIs \n'
     );
   }
-
 });
+
+// https.createServer(options, app).listen(port, (error) => {
+//   // console.log(`HTTPS server started on port 8080`);
+//   if (error) {
+//     log.red(`* unable to start serevr at port ${port} *`);
+//   } else {
+//     log.green(`✓ Started server at port ${port}`);
+//     console.log(
+//       `\nYou can access apis at ${protocolType}://${servingDomain}:${port}/`,
+//       '\nReady to listen for APIs \n'
+//     );
+//   }
+
+// });
 
