@@ -39,13 +39,9 @@ import { router as userRouter } from './routes/user.routes.js';
 // using middlewares
 import cors from 'cors';
 import morgan from 'morgan';
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('combined'));
 
@@ -85,4 +81,3 @@ app.listen(port, (error) => {
 //   }
 
 // });
-
