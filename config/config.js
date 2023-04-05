@@ -13,7 +13,7 @@ export const development = {
   port: process.env.DEV_BACKEND_PORT,
 
   // other config vars
-  frontendDomain: process.env.DEV_FRONTEND_DOMAIN,
+  frontendDomain: process.env.DEV_FRONTEND_DOMAIN || 'localhost:3000',
 
   // OAuth vars
   googleOAuthClientID: process.env.DEV_GOOGLE_OAUTH_CLIENT_ID,

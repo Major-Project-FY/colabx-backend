@@ -14,7 +14,7 @@ import { log } from './services/logger/color.logger.js';
 console.log('\n****** Starting ColabX Backend ******\n');
 
 // server vars
-const port = config.port;
+const { frontendDomain, port } = config;
 const protocolType = config.protocol;
 const servingDomain = '127.0.0.1';
 
@@ -36,10 +36,12 @@ import { router as userRouter } from './routes/user.routes.js';
 //   cert: fs.readFileSync('./config/keys/cert.crt'),
 // };
 
-// using middlewares
+// importing middlewares
 import cors from 'cors';
 import morgan from 'morgan';
-app.use(cors({ origin: '*' }));
+
+// using middlewares
+app.use(cors({ credentials: true, origin: `https://${frontendDomain}` }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
