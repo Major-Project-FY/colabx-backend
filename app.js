@@ -41,7 +41,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 
 // using middlewares
-app.use(cors({ credentials: true, origin: `https://${frontendDomain}` }));
+app.use(cors({ credentials: true, origin: `https://${frontendDomain}/` }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
