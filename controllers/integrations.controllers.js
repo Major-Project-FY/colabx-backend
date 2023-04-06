@@ -192,6 +192,8 @@ export const authorizeGitHubUser = async (req, res, next) => {
                           'Set-Cookie'
                         );
 
+                        res.setHeader('SameSite', 'None');
+
                         // creating session cookie
                         res.cookie(
                           'st',
