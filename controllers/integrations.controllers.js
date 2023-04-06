@@ -186,6 +186,12 @@ export const authorizeGitHubUser = async (req, res, next) => {
                           throw error;
                         }
 
+                        // setting required headers
+                        res.setHeader(
+                          'Access-Control-Allow-Headers',
+                          'Set-Cookie'
+                        );
+
                         // creating session cookie
                         res.cookie(
                           'st',
