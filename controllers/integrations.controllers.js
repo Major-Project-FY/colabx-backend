@@ -206,6 +206,8 @@ export const authorizeGitHubUser = async (req, res, next) => {
                             path: '/',
                           }
                         );
+                        // debug
+                        console.log(res.cookie('st'));
 
                         // sending response back to client
                         res.status(200).json({ status: 'successful' });
