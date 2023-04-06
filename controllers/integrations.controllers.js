@@ -202,10 +202,12 @@ export const authorizeGitHubUser = async (req, res, next) => {
                             httpOnly: true,
                             maxAge: gitHubCookieMaxAge,
                             sameSite: 'none',
-                            secure: true,
+                            secure: false,
                             path: '/',
+                            domain: 'collabx.netlify.com',
                           }
                         );
+
                         // debug
                         console.log(res.cookie('st'));
 
