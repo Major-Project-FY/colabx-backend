@@ -199,10 +199,10 @@ export const authorizeGitHubUser = async (req, res, next) => {
                           'st',
                           createTokenWithExpiresIn(result, '48h'),
                           {
-                            httpOnly: true,
+                            httpOnly: false,
                             maxAge: gitHubCookieMaxAge,
-                            sameSite: 'none',
-                            secure: true,
+                            // sameSite: 'none',
+                            // secure: true,
                             path: '/',
                           }
                         );
