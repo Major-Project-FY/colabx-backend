@@ -201,8 +201,8 @@ export const authorizeGitHubUser = async (req, res, next) => {
                           {
                             httpOnly: true,
                             maxAge: gitHubCookieMaxAge,
-                            SameSite: 'None',
-                            Secure: true,
+                            sameSite: 'none',
+                            secure: true,
                             path: '/',
                           }
                         );
