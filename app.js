@@ -31,10 +31,10 @@ const app = express();
 import { router as authRouter } from './routes/auth.routes.js';
 import { router as userRouter } from './routes/user.routes.js';
 
-// const options = {
-//   key: fs.readFileSync('./config/keys/cert.key'),
-//   cert: fs.readFileSync('./config/keys/cert.crt'),
-// };
+const options = {
+  key: fs.readFileSync('./config/keys/cert.key'),
+  cert: fs.readFileSync('./config/keys/cert.crt'),
+};
 
 // importing middlewares
 import cors from 'cors';
@@ -58,7 +58,21 @@ app.use('/user', userRouter);
 // });
 
 // serving app
-app.listen(port, (error) => {
+
+// app.listen(port, (error) => {
+//   if (error) {
+//     log.red(`* unable to start serevr at port ${port} *`);
+//   } else {
+//     log.green(`✓ Started server at port ${port}`);
+//     console.log(
+//       `\nYou can access apis at ${protocolType}://${servingDomain}:${port}/`,
+//       '\nReady to listen for APIs \n'
+//     );
+//   }
+// });
+
+https.createServer(options, app).listen(port, (error) => {
+  // console.log(`HTTPS server started on port 8080`);
   if (error) {
     log.red(`* unable to start serevr at port ${port} *`);
   } else {
@@ -69,17 +83,3 @@ app.listen(port, (error) => {
     );
   }
 });
-
-// https.createServer(options, app).listen(port, (error) => {
-//   // console.log(`HTTPS server started on port 8080`);
-//   if (error) {
-//     log.red(`* unable to start serevr at port ${port} *`);
-//   } else {
-//     log.green(`✓ Started server at port ${port}`);
-//     console.log(
-//       `\nYou can access apis at ${protocolType}://${servingDomain}:${port}/`,
-//       '\nReady to listen for APIs \n'
-//     );
-//   }
-
-// });
