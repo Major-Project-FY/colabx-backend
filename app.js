@@ -52,10 +52,10 @@ app.use('/auth', authRouter);
 app.use('/user', userRouter);
 
 // default route
-// app.use('/', (req, res) => {
-//   // redirecting default backend route to frontend homepage
-//   res.redirect(`https://${config.frontendDomain}`);
-// });
+app.use('/', (req, res) => {
+  // redirecting default backend route to frontend homepage
+  res.redirect(`https://${config.frontendDomain}`);
+});
 
 // serving app
 
