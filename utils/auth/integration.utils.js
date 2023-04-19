@@ -49,10 +49,9 @@ export const getUserAllRepos = (username, token) => {
 };
 
 // helper function that gets collaborators for a given repository
-export const getGitHubRepoContributors = (repoName, gitHubUser, token) => {
+export const getGitHubRepoCollaborators = (gitHubUser, repoName, token) => {
   return new Promise((resolve, reject) => {
-    const URL = `https://api.github.com/repos/${gitHubUser}/${repoName}/contributors?per_page=100&page=1`;
-    console.log('url', URL);
+    const URL = `https://api.github.com/repos/${gitHubUser}/${repoName}/collaborators?per_page=100&page=1`;
     let urlConfig = {
       method: 'get',
       url: URL,
@@ -66,11 +65,37 @@ export const getGitHubRepoContributors = (repoName, gitHubUser, token) => {
     axios(urlConfig)
       .then((res) => {
         const data = [];
-        // console.log(res.data[0].login);
-        // console.log('total ', res.headers.get('Total'));
-        // if (repoName == 'android_kernel_xiaomi_msm8917') {
-        //   console.log(res);
-        // }
+        for (let i in res.data) {
+          data.push({
+            contributorGitHubUserName: res.data[i].login,
+            avtarURL: res.data[i].avatar_url,
+          });
+        }
+        resolve(data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+// helper function that gets contributors for a given repository
+export const getGitHubRepoContributors = (gitHubUser, repoName, token) => {
+  return new Promise((resolve, reject) => {
+    const URL = `https://api.github.com/repos/${gitHubUser}/${repoName}/contributors?per_page=100&page=1`;
+    let urlConfig = {
+      method: 'get',
+      url: URL,
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${token}`,
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    };
+    urlConfig.url = URL;
+    axios(urlConfig)
+      .then((res) => {
+        const data = [];
         for (let i in res.data) {
           data.push({
             contributorGitHubUserName: res.data[i].login,
@@ -78,12 +103,31 @@ export const getGitHubRepoContributors = (repoName, gitHubUser, token) => {
             contributions: res.data[i].contributions,
           });
         }
-        console.log(data);
         resolve(data);
       })
       .catch((err) => {
         reject(err);
       });
+  });
+};
+
+export const getGithubRepoLanguages = (gitHubUsername, repoName, token) => {
+  return new Promise((resolve, reject) => {
+    const URL = `https://api.github.com/repos/${gitHubUsername}/${repoName}/languages`;
+    const urlConfig = {
+      method: 'get',
+      url: URL,
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${token}`,
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    };
+    axios(urlConfig)
+      .then((resposne) => {
+        resolve(resposne.data);
+      })
+      .catch((error) => reject(error));
   });
 };
 
@@ -94,50 +138,59 @@ export const processAndSyncRepoInfo = async (
   gitHubUsername,
   token
 ) => {
-  console.log('info recieved', userID);
+  console.log('info received', userID);
   let finalData = [];
-  for (let i in info) {
-    // const contributors = await getGitHubRepoContributors(
-    //   info[i].name,
-    //   gitHubUsername,
-    //   token
-    // );
+  const promises = info.map(async (repo) => {
+
     const repoObject = {
       userID: userID,
-      repoName: info[i].name,
-      repoFullName: info[i].full_name,
-      private: info[i].private,
-      ownerUsername: info[i].owner.login,
-      htmlURL: info[i].html_url,
-      description: info[i].description,
-      fork: info[i].fork,
-      url: info[i].url,
-      forksURL: info[i].forks_url,
-      collaborators: {},
-      languages: {},
-      contributors: {},
-      repoCreatedAt: info[i].created_at,
-      repoUpdatedAt: info[i].updated_at,
-      repoPushedAt: info[i].pushed_at,
-      gitURL: info[i].git_url,
-      sshURL: info[i].ssh_url,
-      cloneIRL: info[i].clone_url,
-      repoSize: info[i].size,
-      mainLanguage: info[i].language,
-      forksCount: info[i].forks_count,
-      archived: info[i].archived,
-      disabled: info[i].disabled,
-      openIssuesCount: info[i].open_issues_count,
-      license: info[i].license,
-      allowForking: info[i].allow_forking,
-      topics: info[i].topics,
-      visibility: info[i].visibility,
-      forks: info[i].forks,
-      defaultBranch: info[i].default_branch,
-      permissions: info[i].permissions,
+      repoName: repo.name,
+      repoFullName: repo.full_name,
+      private: repo.private,
+      ownerUsername: repo.owner.login,
+      htmlURL: repo.html_url,
+      description: repo.description,
+      fork: repo.fork,
+      url: repo.url,
+      forksURL: repo.forks_url,
+      collaborators: await getGitHubRepoCollaborators(
+        repo.owner.login,
+        repo.name,
+        token
+      ),
+      languages: await getGithubRepoLanguages(
+        repo.owner.login,
+        repo.name,
+        token
+      ),
+      contributors: await getGitHubRepoContributors(
+        repo.owner.login,
+        repo.name,
+        token
+      ),
+      repoCreatedAt: repo.created_at,
+      repoUpdatedAt: repo.updated_at,
+      repoPushedAt: repo.pushed_at,
+      gitURL: repo.git_url,
+      sshURL: repo.ssh_url,
+      cloneIRL: repo.clone_url,
+      repoSize: repo.size,
+      mainLanguage: repo.language,
+      forksCount: repo.forks_count,
+      archived: repo.archived,
+      disabled: repo.disabled,
+      openIssuesCount: repo.open_issues_count,
+      license: repo.license,
+      allowForking: repo.allow_forking,
+      topics: repo.topics,
+      visibility: repo.visibility,
+      forks: repo.forks,
+      defaultBranch: repo.default_branch,
+      permissions: repo.permissions,
     };
     finalData.push(repoObject);
-  }
+  });
+  await Promise.all(promises);
   await gitHubUserRepos.deleteMany({ userID: userID });
   const insertResult = await gitHubUserRepos.insertMany(finalData);
   return insertResult;
