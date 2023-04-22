@@ -30,6 +30,7 @@ const app = express();
 // importing routers
 import { router as authRouter } from './routes/auth.routes.js';
 import { router as userRouter } from './routes/user.routes.js';
+import { router as postRouter } from './routes/posts.routes.js';
 
 // const options = {
 //   key: fs.readFileSync('./config/keys/cert.key'),
@@ -50,6 +51,7 @@ app.use(morgan('combined'));
 // using routers
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
+app.use('/posts', postRouter);
 
 // default route
 app.use('/', (req, res) => {
