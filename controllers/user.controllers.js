@@ -1,5 +1,11 @@
 // module imports
 import { Op } from 'sequelize';
+import axios from 'axios';
+
+// importing config
+import { config } from '../config/config.js';
+
+// imporing utils
 import {
   getUserAllRepos,
   processAndSyncRepoInfo,
@@ -120,21 +126,46 @@ export const userGitHubData = async (req, res, next) => {
 
 //APIs get user's github repositories info
 export const getUserGitHubRepos = async (req, res, next) => {
-  const { userID, access_token } = res.locals.user;
+  try {
+    const { userID, access_token } = res.locals.user;
 
-  const user = await gitHubUserInfo.findOne({ userID: userID }, [
-    'gitHubUsername',
-  ]);
+    const user = await gitHubUserInfo.findOne({ userID: userID }, [
+      'gitHubUsername',
+    ]);
 
-  const result = await getUserAllRepos(user.gitHubUsername, access_token);
+    const result = await getUserAllRepos(user.gitHubUsername, access_token);
 
-  const finalResult = await processAndSyncRepoInfo(
-    result,
-    userID,
-    user.gitHubUsername,
-    access_token
-  );
-  res.status(200).json(finalResult);
+    const finalResult = await processAndSyncRepoInfo(
+      result,
+      userID,
+      user.gitHubUsername,
+      access_token
+    );
+    if (finalResult) {
+      res.status(200).json(finalResult);
+    } else {
+      res.status(400).json({
+        status: 'unsuccessful',
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ status: 'unsuccessful' });
+  }
+};
+
+export const getUserRanking = async (req, res, next) => {
+  const { userID } = res.locals.user;
+  axios({
+    method: 'get',
+    // maxContentLength: Infinity,
+    url: `${config.processingBackendDomain}/processing/rank-user/${userID}`,
+  })
+    .then((response) => {
+      res.status(200).json({ userLevel: response.data['user_level'] });
+    })
+    .catch((err) => {
+      throw err;
+    });
   try {
   } catch (error) {}
 };

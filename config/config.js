@@ -7,6 +7,7 @@ export const env = process.argv[2];
 export const development = {
   // server vars
   backendDomain: process.env.DEV_BACKEND_DOMAIN,
+  processingBackendDomain: process.env.DEV_PROCESSING_BACKEND_DOMAIN,
   protocol: process.env.DEV_PROTOCOL_TYPE,
   ensecret: process.env.DEV_ENCRYPTON_SECRET,
   tokenSecret: process.env.DEV_TOKEN_SECRET,
