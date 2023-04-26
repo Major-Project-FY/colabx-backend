@@ -10,6 +10,7 @@ export const development = {
   dialect: 'postgres',
   protocol: 'postgres',
   hostType: process.env.DEV_HOST_TYPE,
+  sslCertificate: process.env.DEV_MAIN_DB_RDS_CERTIFICATE_NAME,
 
   secondary: {
     uri: process.env.DEV_SECONDARY_DB_URI,

@@ -1,6 +1,11 @@
 // importing config vars
 import { env } from '../config/config.js';
 
+// importing modules
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 // importing helper functions
 import { serverExit } from '../services/logger/logger.js';
 
@@ -41,11 +46,18 @@ export const mainDB = new Sequelize(connectionString, {
   port: Number(config.port),
   protocol: config.protocol,
   logging: env == 'development' ? console.log : false,
+  ssl: true,
   dialectOptions: {
-    ssl: true,
+    ca: fs.readFileSync(
+      path.join(
+        path.dirname(fileURLToPath(import.meta.url)),
+        `../config/certificates/${config.sslCertificate}`
+      )
+    ),
     native: true,
     rejectUnauthorized: false,
   },
+
   // dialectOptions: config.hostType == 'render'
   //   ? { ssl: true, native: true, rejectUnauthorized: false }
   //   : {},
