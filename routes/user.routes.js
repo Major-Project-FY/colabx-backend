@@ -7,6 +7,7 @@ import {
   userGitHubData,
   getUserGitHubRepos,
   getUserRanking,
+  recommendUsers,
 } from '../controllers/user.controllers.js';
 
 // importing middlewares
@@ -24,3 +25,4 @@ router.get('/github-repos', checkUserSession, getUserGitHubRepos);
 
 // processing routes
 router.get('/ranking', checkUserSession, getUserRanking);
+router.get('/recommendations', checkUserSession, recommendUsers);

@@ -1,5 +1,5 @@
 // module imports
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import axios from 'axios';
 
 // importing config
@@ -168,4 +168,31 @@ export const getUserRanking = async (req, res, next) => {
     });
   try {
   } catch (error) {}
+};
+
+export const recommendUsers = async (req, res, next) => {
+  const randomRows = await User.findAll({
+    attributes: [
+      ['id', 'userID'],
+      ['first_name', 'firstName'],
+      ['last_name', 'lastName'],
+      ['email', 'userMail'],
+    ],
+    order: Sequelize.literal('random()'),
+    limit: 20,
+  });
+  if (randomRows) {
+    res.status(200).json(randomRows);
+  } else {
+    res.status(400).json({
+      status: 'unsuccessful',
+    });
+  }
+  // try {
+
+  // } catch (error) {
+  //   res.status(500).json({
+  //     status: 'unsuccessful',
+  //   });
+  // }
 };
