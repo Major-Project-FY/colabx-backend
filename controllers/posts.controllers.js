@@ -1,8 +1,9 @@
 // module imports
-import { Sequelize, Op } from 'sequelize';
+import { Sequelize, Op, literal } from 'sequelize';
 
 // importing models
 import { Post } from '../models/projectPosts.js';
+import { User } from '../models/user.js';
 
 // importing helper functions
 import { currentDate } from '../utils/basic/basic.utils.js';
@@ -78,21 +79,38 @@ export const getPost = async (req, res, next) => {
 };
 
 export const getPostsForFeed = async (req, res, next) => {
-  try {
-    const randomRows = await Post.findAll({
-      order: Sequelize.literal('random()'),
-      limit: 10,
-    });
-    if (randomRows) {
-      res.status(200).json(randomRows);
-    } else {
-      res.status(400).json({
-        status: 'unsuccessful',
-      });
-    }
-  } catch (error) {
-    res.status(500).json({
+  const randomRows = await Post.findAll({
+    attributes: [
+      ['id', 'projectID'],
+      ['post_title', 'postTitle'],
+      ['project_urls', 'projectURLs'],
+      ['post_description', 'postDescription'],
+      ['media_urls', 'mediaURLs'],
+    ],
+    include: {
+      model: User,
+      as: 'users',
+      attributes: [
+        ['id', 'userID'],
+        [literal(`"users"."first_name" || ' ' || "users"."last_name"`), 'name'],
+      ],
+      required: true,
+    },
+    order: Sequelize.literal('random()'),
+    limit: 10,
+  });
+  if (randomRows) {
+    res.status(200).json(randomRows);
+  } else {
+    res.status(400).json({
       status: 'unsuccessful',
     });
   }
+  // try {
+
+  // } catch (error) {
+  //   res.status(500).json({
+  //     status: 'unsuccessful',
+  //   });
+  // }
 };

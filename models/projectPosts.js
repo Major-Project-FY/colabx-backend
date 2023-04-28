@@ -1,6 +1,9 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import { mainDB } from '../loaders/baseDB.init.js';
 
+// importing dependency models
+import { User } from './user.js';
+
 // const sequelize = new Sequelize('postgres::memory:');
 
 export const Post = mainDB.define(
@@ -52,6 +55,8 @@ export const Post = mainDB.define(
     // },
   }
 );
+
+Post.belongsTo(User, { foreignKey: 'user_id', as: 'users' });
 
 // Post.sync({ force: true });
 
