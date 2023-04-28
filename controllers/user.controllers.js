@@ -173,6 +173,7 @@ export const getUserRanking = async (req, res, next) => {
 };
 
 export const recommendUsers = async (req, res, next) => {
+  const { userID } = res.locals.user;
   const randomRows = await User.findAll({
     attributes: [
       ['id', 'userID'],
@@ -180,6 +181,11 @@ export const recommendUsers = async (req, res, next) => {
       ['last_name', 'lastName'],
       ['email', 'userMail'],
     ],
+    where: {
+      id: {
+        [Op.ne]: userID,
+      },
+    },
     order: Sequelize.literal('random()'),
     limit: 20,
   });
