@@ -129,16 +129,21 @@ export const authorizeGitHubUser = async (req, res, next) => {
                   );
                   if (userCheckResult === false) {
                     // processing user's name from GitHub's name
-                    const nameSplit = response.data.name.split(' ');
                     let userFirstName = 'None';
                     let userLastName = '';
-                    if (nameSplit.length > 0) {
-                      if (nameSplit.length == 1) {
-                        userFirstName = nameSplit[0];
-                      } else {
-                        userFirstName = nameSplit[0];
-                        userLastName = nameSplit[nameSplit.length - 1];
+                    if (response.data.name) {
+                      const nameSplit = response.data.name.split(' ');
+
+                      if (nameSplit.length > 0) {
+                        if (nameSplit.length == 1) {
+                          userFirstName = nameSplit[0];
+                        } else {
+                          userFirstName = nameSplit[0];
+                          userLastName = nameSplit[nameSplit.length - 1];
+                        }
                       }
+                    } else {
+                      userFirstName = response.data.login;
                     }
 
                     // creating CollabX user with recieved information

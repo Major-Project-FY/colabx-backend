@@ -154,20 +154,22 @@ export const getUserGitHubRepos = async (req, res, next) => {
 };
 
 export const getUserRanking = async (req, res, next) => {
-  const { userID } = res.locals.user;
-  axios({
-    method: 'get',
-    // maxContentLength: Infinity,
-    url: `${config.processingBackendDomain}/processing/rank-user/${userID}`,
-  })
-    .then((response) => {
-      res.status(200).json({ userLevel: response.data['user_level'] });
-    })
-    .catch((err) => {
-      throw err;
-    });
   try {
-  } catch (error) {}
+    const { userID } = res.locals.user;
+    axios({
+      method: 'get',
+      // maxContentLength: Infinity,
+      url: `${config.processingBackendDomain}/processing/rank-user/${userID}`,
+    })
+      .then((response) => {
+        res.status(200).json(response.data);
+      })
+      .catch((err) => {
+        throw err;
+      });
+  } catch (error) {
+    res.status(500).json({ status: 'unsuccessful' });
+  }
 };
 
 export const recommendUsers = async (req, res, next) => {
