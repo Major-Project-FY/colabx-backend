@@ -59,8 +59,10 @@ app.use('/', (req, res) => {
   res.redirect(`https://${config.frontendDomain}`);
 });
 
-// serving app
+// debug
+console.log('backend domain', config.backendDomain);
 
+// serving app
 app.listen(port, (error) => {
   if (error) {
     log.red(`* unable to start serevr at port ${port} *`);
