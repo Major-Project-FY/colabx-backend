@@ -16,7 +16,7 @@ console.log('\n****** Starting ColabX Backend ******\n');
 // server vars
 const { frontendDomain, port } = config;
 const protocolType = config.protocol;
-const servingDomain = '127.0.0.1';
+// const servingDomain = '127.0.0.1';
 
 // DB imports
 import { mainDB } from './loaders/baseDB.init.js';
@@ -56,20 +56,21 @@ app.use('/posts', postRouter);
 // default route
 app.use('/', (req, res) => {
   // redirecting default backend route to frontend homepage
-  res.redirect(`https://${config.frontendDomain}`);
+  // res.redirect(`https://${config.frontendDomain}`);
+  res.status(404).json({msg: "route doesn't exist"})
 });
 
 // debug
-console.log('backend domain', config.backendDomain);
+// console.log('backend domain', config.backendDomain);
 
 // serving app
-app.listen(port, (error) => {
+app.listen(port, config.backendDomain, (error) => {
   if (error) {
     log.red(`* unable to start serevr at port ${port} *`);
   } else {
     log.green(`✓ Started server at port ${port}`);
     console.log(
-      `\nYou can access apis at ${protocolType}://${servingDomain}:${port}/`,
+      `\nYou can access apis at ${protocolType}://${config.backendDomain}:${port}/`,
       '\nReady to listen for APIs \n'
     );
   }
