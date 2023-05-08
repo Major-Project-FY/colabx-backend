@@ -11,8 +11,8 @@ export const development = {
   protocol: process.env.DEV_PROTOCOL_TYPE,
   ensecret: process.env.DEV_ENCRYPTON_SECRET,
   tokenSecret: process.env.DEV_TOKEN_SECRET,
-  // port: process.env.DEV_BACKEND_PORT,
-  port: process.env.PORT,
+  port: process.env.DEV_BACKEND_PORT,
+  // port: process.env.PORT,
 
   // other config vars
   frontendDomain: process.env.DEV_FRONTEND_DOMAIN || 'localhost:3000',

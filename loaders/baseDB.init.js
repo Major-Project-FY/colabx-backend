@@ -48,14 +48,14 @@ export const mainDB = new Sequelize(connectionString, {
   logging: env == 'development' ? console.log : false,
   ssl: true,
   dialectOptions: {
-    // ca: fs.readFileSync(
-    //   path.join(
-    //     path.dirname(fileURLToPath(import.meta.url)),
-    //     `../config/certificates/${config.sslCertificate}`
-    //   )
-    // ),
+    ca: fs.readFileSync(
+      path.join(
+        path.dirname(fileURLToPath(import.meta.url)),
+        `../config/certificates/${config.sslCertificate}`
+      )
+    ),
     native: true,
-    // rejectUnauthorized: false,
+    rejectUnauthorized: false,
     // rejectUnauthorized: true,
   },
 
