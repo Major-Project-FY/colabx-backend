@@ -31,6 +31,7 @@ const app = express();
 import { router as authRouter } from './routes/auth.routes.js';
 import { router as userRouter } from './routes/user.routes.js';
 import { router as postRouter } from './routes/posts.routes.js';
+import { router as problemStatementsRouter } from './routes/problemStatements.routes.js';
 
 // const options = {
 //   key: fs.readFileSync('./config/keys/cert.key'),
@@ -52,12 +53,13 @@ app.use(morgan('combined'));
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/posts', postRouter);
+app.use('/problem-statemets', problemStatementsRouter);
 
 // default route
 app.use('/', (req, res) => {
   // redirecting default backend route to frontend homepage
   // res.redirect(`https://${config.frontendDomain}`);
-  res.status(404).json({msg: "route doesn't exist"})
+  res.status(404).json({ msg: "route doesn't exist" });
 });
 
 // debug

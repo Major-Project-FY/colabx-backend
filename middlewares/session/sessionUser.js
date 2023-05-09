@@ -18,6 +18,7 @@ export const checkUserSession = (req, res, next) => {
       jwt.verify(token, tokenSecret, (err, decodedToken) => {
         if (decodedToken) {
           res.locals.user = decodedToken;
+          console.log("ip", req.ip);
           next();
         } else if (err) {
           console.log(err);
