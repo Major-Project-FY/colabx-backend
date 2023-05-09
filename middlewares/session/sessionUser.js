@@ -19,7 +19,6 @@ export const checkUserSession = (req, res, next) => {
         if (decodedToken) {
           res.locals.user = decodedToken;
           console.log('ip', req.ip);
-          console.log(req);
           const clientIP =
             req.headers['x-forwarded-for'] || req.connection.remoteAddress;
           const ipv4 = clientIP.includes(':')
