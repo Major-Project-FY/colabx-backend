@@ -49,6 +49,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('combined'));
 
+// setting paramaters
+app.set('trust proxy', true); // Enable trust for proxy headers
+
 // using routers
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
