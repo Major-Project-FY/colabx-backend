@@ -18,7 +18,12 @@ export const checkUserSession = (req, res, next) => {
       jwt.verify(token, tokenSecret, (err, decodedToken) => {
         if (decodedToken) {
           res.locals.user = decodedToken;
-          console.log("ip", req.ip);
+          console.log('ip', req.ip);
+          const clientIP = req.connection.remoteAddress;
+          const ipv4 = clientIP.includes(':')
+            ? clientIP.split(':').slice(-1)[0]
+            : clientIP;
+          console.log('IPv4', ipv4);
           next();
         } else if (err) {
           console.log(err);
