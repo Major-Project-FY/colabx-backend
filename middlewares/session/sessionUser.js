@@ -19,19 +19,13 @@ export const checkUserSession = (req, res, next) => {
         if (decodedToken) {
           res.locals.user = decodedToken;
           console.log('ip', req.ip);
-          const clientIP =
-            req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-          const ipv4 = clientIP.includes(':')
-            ? clientIP.split(':').slice(-1)[0]
-            : clientIP;
-          console.log('IPv4', ipv4);
           next();
         } else if (err) {
           console.log(err);
           res.locals.user = null;
           warningLog(
             'User Signup',
-            `invalid session or session expired for user with ip address ${req.socket.remoteAddress}`
+            `invalid session or session expired for user with ip address ${req.ip}`
           );
           res.status(403).json({
             status: 'unsuccessful',
@@ -40,7 +34,7 @@ export const checkUserSession = (req, res, next) => {
         } else {
           errorLog(
             'User Signup',
-            'error occured while checking token for user with ip address ${req.socket.remoteAddress}'
+            'error occured while checking token for user with ip address ${req.ip}'
           );
           res.status(500).json({
             status: 'unsuccessful',
@@ -51,7 +45,7 @@ export const checkUserSession = (req, res, next) => {
     } else {
       errorLog(
         'User Signup',
-        `token not found for user with ip address ${req.socket.remoteAddress}`
+        `token not found for user with ip address ${req.ip}`
       );
       // console.log('token not found');
       res.status(401).json({
@@ -62,7 +56,7 @@ export const checkUserSession = (req, res, next) => {
   } catch (error) {
     errorLog(
       'User Signup',
-      `unable to verify token for user with ip address ${req.socket.remoteAddress}`
+      `unable to verify token for user with ip address ${req.ip}`
     );
     console.log(error);
     res.status(500).json({

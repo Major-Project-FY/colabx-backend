@@ -154,7 +154,7 @@ export const authorizeGitHubUser = async (req, res, next) => {
                       password: null,
                       signed_up_through: 'GITHUB',
                       last_login: currentDate(),
-                      last_ip_address: req.socket.remoteAddress,
+                      last_ip_address: req.ip,
                     })
                       .then(async (userCreateResult) => {
                         // console.log('create user results', userCreateResult.dataValues);
@@ -265,25 +265,25 @@ export const authorizeGitHubUser = async (req, res, next) => {
         if (error.code == 'OAUTH-GITHUBDIFFRES') {
           warningLog(
             'GitHub Auth',
-            `error while authenticating github user with IP ${req.socket.remoteAddress}`
+            `error while authenticating github user with IP ${req.ip}`
           );
           res.status(400).json({ status: 'unsuccessful' }).send();
         } else if (err.code == 'OAUTH-GITHUBNOINFO') {
           warningLog(
             'GitHub Auth',
-            `error while getting GitHub info of user with IP ${req.socket.remoteAddress}`
+            `error while getting GitHub info of user with IP ${req.ip}`
           );
           res.status(500).json({ status: 'unsuccessful' }).send();
         } else if (err.code == 'OAUTH-GITHUBNOEMAIL') {
           warningLog(
             'GitHub Auth',
-            `error while getting GitHub email of user with IP ${req.socket.remoteAddress}`
+            `error while getting GitHub email of user with IP ${req.ip}`
           );
           res.status(500).json({ status: 'unsuccessful' }).send();
         } else if (err.code == 'OAUTH-GITHUBNOUSRCREATE') {
           warningLog(
             'GitHub Auth',
-            `error while creating CollabX user from github data of user with IP ${req.socket.remoteAddress}`
+            `error while creating CollabX user from github data of user with IP ${req.ip}`
           );
           res.status(500).json({ status: 'unsuccessful' }).send();
         } else {

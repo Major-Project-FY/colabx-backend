@@ -25,7 +25,7 @@ export const checkSignupUser = (req, res, next) => {
           res.locals.user = null;
           warningLog(
             'User Signup',
-            `invalid session or session expired for user with ip address ${req.socket.remoteAddress}`
+            `invalid session or session expired for user with ip address ${req.ip}`
           );
           res.status(403).json({
             success: false,
@@ -34,7 +34,7 @@ export const checkSignupUser = (req, res, next) => {
         } else {
           errorLog(
             'User Signup',
-            `error occured while checking token for user with ip address ${req.socket.remoteAddress}`
+            `error occured while checking token for user with ip address ${req.ip}`
           );
           res.status(500).json({
             success: false,
@@ -45,7 +45,7 @@ export const checkSignupUser = (req, res, next) => {
     } else {
       errorLog(
         'User Signup',
-        `token not found for user with ip address ${req.socket.remoteAddress}`
+        `token not found for user with ip address ${req.ip}`
       );
       // console.log('token not found');
       res.status(401).json({
@@ -73,7 +73,7 @@ export const checkSignUpGitHubUser = (req, res, next) => {
           res.locals.user = null;
           warningLog(
             'User Signup',
-            `invalid session or session expired for user with ip address ${req.socket.remoteAddress}`
+            `invalid session or session expired for user with ip address ${req.ip}`
           );
           res.status(403).json({
             success: false,
@@ -82,7 +82,7 @@ export const checkSignUpGitHubUser = (req, res, next) => {
         } else {
           errorLog(
             'User Signup',
-            `error occured while checking token for user with ip address ${req.socket.remoteAddress}`
+            `error occured while checking token for user with ip address ${req.ip}`
           );
           res.status(500).json({
             success: false,
@@ -93,7 +93,7 @@ export const checkSignUpGitHubUser = (req, res, next) => {
     } else {
       errorLog(
         'User Signup',
-        `token not found for user with ip address ${req.socket.remoteAddress}`
+        `token not found for user with ip address ${req.ip}`
       );
       // console.log('token not found');
       res.status(401).json({

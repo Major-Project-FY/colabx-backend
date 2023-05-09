@@ -43,7 +43,7 @@ export const basicUserDetails = async (req, res, next) => {
       } else {
         warningLog(
           'User',
-          `unable to find basic data for user with id ${userID} requested from IP address ${req.socket.remoteAddress}`
+          `unable to find basic data for user with id ${userID} requested from IP address ${req.ip}`
         );
         res.status(404).json({
           status: 'unsuccessful',
@@ -53,10 +53,10 @@ export const basicUserDetails = async (req, res, next) => {
     } else {
       warningLog(
         'User',
-        `unable to get user ID for authenticated user with IP ${req.socket.remoteAddress}`
+        `unable to get user ID for authenticated user with IP ${req.ip}`
       );
       const error = new Error(
-        `UserID not found for user logged in with ip ${req.socket.remoteAddress}`
+        `UserID not found for user logged in with ip ${req.ip}`
       );
       error.code = 'USRIDNOTFOUND';
       throw error;
@@ -89,7 +89,7 @@ export const userGitHubData = async (req, res, next) => {
       } else {
         warningLog(
           'User',
-          `unable to find github data for user with id ${userID} requested from IP address ${req.socket.remoteAddress}`
+          `unable to find github data for user with id ${userID} requested from IP address ${req.ip}`
         );
         res.status(404).json({
           status: 'unsuccessful',
@@ -99,10 +99,10 @@ export const userGitHubData = async (req, res, next) => {
     } else {
       warningLog(
         'User',
-        `unable to get user ID for authenticated user with IP ${req.socket.remoteAddress}`
+        `unable to get user ID for authenticated user with IP ${req.ip}`
       );
       const error = new Error(
-        `UserID not found for user logged in with ip ${req.socket.remoteAddress}`
+        `UserID not found for user logged in with ip ${req.ip}`
       );
       error.code = 'USRIDNOTFOUND';
       throw error;

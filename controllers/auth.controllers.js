@@ -34,7 +34,7 @@ export const signupVerifyEmail = async (req, res, next) => {
     const user = new signupUser({
       signupEmail: req.body.userEmail,
       userOTP: otp,
-      userIP: req.socket.remoteAddress,
+      userIP: req.ip,
       verifiedEmail: false,
     });
 
@@ -73,7 +73,7 @@ export const signupVerifyEmail = async (req, res, next) => {
         // logging result
         successLog(
           'User Signup',
-          `otp email has successfully sent to user with IP Address ${req.socket.remoteAddress}`
+          `otp email has successfully sent to user with IP Address ${req.ip}`
         );
       })
       .catch((error) => {
@@ -153,7 +153,7 @@ export const userSignup = async (req, res, next) => {
         password: hashedPassword,
         signed_up_through: 'DEFAULT',
         last_login: currentDate(),
-        last_ip_address: req.socket.remoteAddress,
+        last_ip_address: req.ip,
       })
         .then((result) => {
           // updating session cookies
@@ -172,7 +172,7 @@ export const userSignup = async (req, res, next) => {
           // .send();
           successLog(
             'User Signup',
-            `user ${req.body.userEmail} has successfully signed up with IP Address ${req.socket.remoteAddress}`
+            `user ${req.body.userEmail} has successfully signed up with IP Address ${req.ip}`
           );
         })
         .catch((err) => {
@@ -220,7 +220,7 @@ export const userSignup = async (req, res, next) => {
 
       warningLog(
         'User Signup',
-        `user ${res.locals.user.signupUserEmail} with ip ${req.socket.remoteAddress} already exists in database`
+        `user ${res.locals.user.signupUserEmail} with ip ${req.ip} already exists in database`
       );
 
       //--> sending response when user with give emailID already exists <--//
@@ -237,7 +237,7 @@ export const userSignup = async (req, res, next) => {
 
       warningLog(
         'User Signup',
-        `something went wrong while signing up user ${res.locals.user.signupUserEmail} with ip ${req.socket.remoteAddress}`
+        `something went wrong while signing up user ${res.locals.user.signupUserEmail} with ip ${req.ip}`
       );
 
       //--> sending response when some undefined error occured <--//
@@ -274,7 +274,7 @@ export const userlogin = async (req, res, next) => {
       // throwing sequelize error on execution
       warningLog(
         'User Login',
-        `error occured while reading creadintials for client requesting from ip ${req.socket.remoteAddress}`
+        `error occured while reading creadintials for client requesting from ip ${req.ip}`
       );
       throw error;
     }
@@ -323,7 +323,7 @@ export const userlogin = async (req, res, next) => {
       console.log('inside incorrect user cred try catch');
       warningLog(
         'User Login',
-        `Login credentials didn't matched for client requesting from ${req.socket.remoteAddress}`
+        `Login credentials didn't matched for client requesting from ${req.ip}`
       );
       log.red(`\n! ${error.message}\n`);
       res.status(403).json({
