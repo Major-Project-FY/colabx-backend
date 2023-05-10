@@ -17,11 +17,11 @@ import { checkUserSession } from '../middlewares/session/sessionUser.js';
 export const router = Router();
 
 // common routes
-router.get('/basic-info', checkUserSession, basicUserDetails);
+router.get('/info', checkUserSession, basicUserDetails);
 
 // github routes
-router.get('/github-info', checkUserSession, userGitHubData);
-router.get('/github-repos', checkUserSession, getUserGitHubRepos);
+router.get('/github/info', checkUserSession, userGitHubData);
+router.get('/github/repos', checkUserSession, getUserGitHubRepos);
 
 // processing routes
 router.get('/ranking', checkUserSession, getUserRanking);
