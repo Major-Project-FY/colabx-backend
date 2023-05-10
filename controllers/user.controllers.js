@@ -14,6 +14,7 @@ import {
 // importing database models
 import { User } from '../models/user.js';
 import { gitHubUserInfo } from '../models/other/userGitHubInfo.schema.js';
+import { ProblemStatement } from '../models/problemStatements.js';
 
 // importing loggers
 import { warningLog } from '../services/logger/logger.js';
@@ -173,34 +174,61 @@ export const getUserRanking = async (req, res, next) => {
 };
 
 export const recommendUsers = async (req, res, next) => {
-  const { userID } = res.locals.user;
-  const randomRows = await User.findAll({
-    attributes: [
-      ['id', 'userID'],
-      ['first_name', 'firstName'],
-      ['last_name', 'lastName'],
-      ['email', 'userMail'],
-    ],
-    where: {
-      id: {
-        [Op.ne]: userID,
+  try {
+    const { userID } = res.locals.user;
+    const randomRows = await User.findAll({
+      attributes: [
+        ['id', 'userID'],
+        ['first_name', 'firstName'],
+        ['last_name', 'lastName'],
+        ['email', 'userMail'],
+      ],
+      where: {
+        id: {
+          [Op.ne]: userID,
+        },
       },
-    },
-    order: Sequelize.literal('random()'),
-    limit: 20,
-  });
-  if (randomRows) {
-    res.status(200).json(randomRows);
-  } else {
-    res.status(400).json({
+      order: Sequelize.literal('random()'),
+      limit: 20,
+    });
+    if (randomRows) {
+      res.status(200).json(randomRows);
+    } else {
+      res.status(400).json({
+        status: 'unsuccessful',
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
       status: 'unsuccessful',
     });
   }
-  // try {
+};
 
-  // } catch (error) {
-  //   res.status(500).json({
-  //     status: 'unsuccessful',
-  //   });
-  // }
+export const getUserProblemStatements = async (req, res, next) => {
+  try {
+    const statements = await ProblemStatement.findAll({
+      attributes: [
+        ['id', 'postID'],
+        ['user_id', 'userID'],
+        ['problem_statement_text', 'statementText'],
+        ['urls', 'postURLs'],
+        ['createdAt', 'postedOn'],
+      ],
+      where: {
+        user_id: { [Op.eq]: res.locals.user.userID },
+      },
+      order: [['createdAt', 'DESC']],
+    });
+    if (statements) {
+      res.status(200).json(statements);
+    } else {
+      res.status(404).json({
+        status: 'unsuccessful',
+        msg: 'statement post not found',
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ status: 'unsuccessful', msg: 'server error' });
+  }
 };

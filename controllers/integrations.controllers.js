@@ -123,7 +123,7 @@ export const authorizeGitHubUser = async (req, res, next) => {
                   }
 
                   // check if user already there in the database
-                  console.log(userEmail);
+                  // console.log(userEmail);
                   const userCheckResult = await checkUserExistByEmail(
                     userEmail
                   );
@@ -213,9 +213,6 @@ export const authorizeGitHubUser = async (req, res, next) => {
                           }
                         );
 
-                        // debug
-                        console.log(res.cookie('st'));
-
                         // sending response back to client
                         res.status(200).json({ status: 'successful' });
                       })
@@ -225,12 +222,11 @@ export const authorizeGitHubUser = async (req, res, next) => {
                         throw err;
                       });
                   } else if (userCheckResult) {
-                    console.log(
-                      'userCheckResult',
-                      userCheckResult.rows[0].dataValues.userID
-                    );
+                    // console.log(
+                    //   'userCheckResult',
+                    //   userCheckResult.rows[0].dataValues.userID
+                    // );
                     result.userID = userCheckResult.rows[0].dataValues.userID;
-                    console.log('result', result);
 
                     // creating session cookie
                     res.cookie('st', createTokenWithExpiresIn(result, '48h'), {
@@ -305,8 +301,6 @@ export const authorizeGitHubUser = async (req, res, next) => {
 export const getUserEmailforGithub = async (req, res, next) => {
   try {
     const { email } = req.body;
-    console.log(email);
-    console.log(res.locals.user);
     res.status(200);
     axios({
       method: 'get',

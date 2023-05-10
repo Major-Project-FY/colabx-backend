@@ -56,7 +56,7 @@ app.set('trust proxy', true); // Enable trust for proxy headers
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/posts', postRouter);
-app.use('/problem-statemets', problemStatementsRouter);
+app.use('/statements', problemStatementsRouter);
 
 // default route
 app.use('/', (req, res) => {

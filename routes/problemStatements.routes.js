@@ -2,7 +2,10 @@
 import { Router } from 'express';
 
 // importing controllers
-import { postProblemStatement } from '../controllers/problemStatements.controllers.js';
+import {
+  postProblemStatement,
+  getProblemStatement,
+} from '../controllers/problemStatements.controllers.js';
 
 // importing middlewares
 import { checkUserSession } from '../middlewares/session/sessionUser.js';
@@ -11,7 +14,7 @@ import { checkUserSession } from '../middlewares/session/sessionUser.js';
 export const router = Router();
 
 // common routes
-// router.get('/problem-satement/:postID', checkUserSession, getPost);
+router.get('/:statementID', checkUserSession, getProblemStatement);
 router.post('/post', checkUserSession, postProblemStatement);
 
 // router.get('/', checkUserSession, getPostsForFeed);
