@@ -9,6 +9,9 @@ import {
   getUserRanking,
   recommendUsers,
   getUserProblemStatements,
+  followUser,
+  getFollowers,
+  getFollowings,
 } from '../controllers/user.controllers.js';
 
 // importing middlewares
@@ -19,6 +22,9 @@ export const router = Router();
 
 // common routes
 router.get('/info', checkUserSession, basicUserDetails);
+router.post('/follow', checkUserSession, followUser);
+router.get('/followers', checkUserSession, getFollowers);
+router.get('/followings', checkUserSession, getFollowings);
 
 // github routes
 router.get('/github/info', checkUserSession, userGitHubData);

@@ -15,6 +15,13 @@ import {
 import { User } from '../models/user.js';
 import { gitHubUserInfo } from '../models/other/userGitHubInfo.schema.js';
 import { ProblemStatement } from '../models/problemStatements.js';
+import { Following } from '../models/following.js';
+
+//importing helper functions
+import {
+  getfollowersWithBasicInfo,
+  getfollowingsWithBasicInfo,
+} from '../utils/others/user.utils.js';
 
 // importing loggers
 import { warningLog } from '../services/logger/logger.js';
@@ -230,5 +237,72 @@ export const getUserProblemStatements = async (req, res, next) => {
     }
   } catch (error) {
     res.status(500).json({ status: 'unsuccessful', msg: 'server error' });
+  }
+};
+
+export const followUser = async (req, res, next) => {
+  try {
+    const { userID } = res.locals.user;
+    const followCheckResult = await Following.count({
+      where: {
+        user_id: { [Op.eq]: userID },
+        following_id: { [Op.eq]: req.body.following },
+      },
+    });
+    console.log(followCheckResult);
+    if (followCheckResult >= 0) {
+      if (followCheckResult > 0) {
+        res.status(409).json({
+          status: 'unsuccessful',
+          msg: 'user is alredy following given user',
+        });
+      } else {
+        const followerCreateResult = await Following.create({
+          user_id: userID,
+          following_id: req.body.following,
+        });
+        if (followerCreateResult) {
+          res.status(200).json({ status: 'successful' });
+        } else {
+          res.status(500).json({ status: 'unsuccessful' });
+        }
+      }
+    } else {
+      res.status(500).json({ status: 'unsuccessful' });
+    }
+  } catch (error) {
+    res.status(400).json({ status: 'unsuccessful' });
+  }
+};
+
+export const getFollowers = async (req, res, next) => {
+  try {
+    const followersResult = await getfollowersWithBasicInfo(
+      res.locals.user.userID
+    );
+    if (followersResult) {
+      res.status(200).json(followersResult);
+    } else {
+      res.status(400).json({ status: 'unsuccessful' });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: 'unsuccessful' });
+  }
+};
+
+export const getFollowings = async (req, res, next) => {
+  try {
+    const followingsResult = await getfollowingsWithBasicInfo(
+      res.locals.user.userID
+    );
+    if (followingsResult) {
+      res.status(200).json(followingsResult);
+    } else {
+      res.status(400).json({ status: 'unsuccessful' });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: 'unsuccessful' });
   }
 };
