@@ -6,6 +6,7 @@ import { mainDB } from '../loaders/baseDB.init.js';
 
 // importing dependency schema
 import { User } from './user.js';
+import { Skill } from './skills.js';
 
 export const ProblemStatement = mainDB.define(
   'problem_statements',
@@ -27,6 +28,9 @@ export const ProblemStatement = mainDB.define(
     },
     urls: {
       type: DataTypes.ARRAY(DataTypes.TEXT),
+    },
+    skills_required: {
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
     },
   },
   {

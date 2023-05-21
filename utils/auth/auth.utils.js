@@ -19,7 +19,7 @@ export const checkUserExistByEmail = (email) => {
         where: { email: { [Op.eq]: email } },
       });
       if (user.count === 1) {
-        console.log(user.rows[0]);
+        // console.log(user.rows[0]);
         resolve(user);
       } else if (user.count === 0) {
         resolve(false)

@@ -264,19 +264,19 @@ export const authorizeGitHubUser = async (req, res, next) => {
             `error while authenticating github user with IP ${req.ip}`
           );
           res.status(400).json({ status: 'unsuccessful' }).send();
-        } else if (err.code == 'OAUTH-GITHUBNOINFO') {
+        } else if (error.code == 'OAUTH-GITHUBNOINFO') {
           warningLog(
             'GitHub Auth',
             `error while getting GitHub info of user with IP ${req.ip}`
           );
           res.status(500).json({ status: 'unsuccessful' }).send();
-        } else if (err.code == 'OAUTH-GITHUBNOEMAIL') {
+        } else if (error.code == 'OAUTH-GITHUBNOEMAIL') {
           warningLog(
             'GitHub Auth',
             `error while getting GitHub email of user with IP ${req.ip}`
           );
           res.status(500).json({ status: 'unsuccessful' }).send();
-        } else if (err.code == 'OAUTH-GITHUBNOUSRCREATE') {
+        } else if (error.code == 'OAUTH-GITHUBNOUSRCREATE') {
           warningLog(
             'GitHub Auth',
             `error while creating CollabX user from github data of user with IP ${req.ip}`
