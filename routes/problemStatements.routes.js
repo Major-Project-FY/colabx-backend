@@ -5,6 +5,7 @@ import { Router } from 'express';
 import {
   postProblemStatement,
   getProblemStatement,
+  getStatementPostsForFeed,
 } from '../controllers/problemStatements.controllers.js';
 
 // importing middlewares
@@ -17,4 +18,5 @@ export const router = Router();
 router.get('/:statementID', checkUserSession, getProblemStatement);
 router.post('/post', checkUserSession, postProblemStatement);
 
-// router.get('/', checkUserSession, getPostsForFeed);
+// recommendations routes
+router.get('/', checkUserSession, getStatementPostsForFeed);

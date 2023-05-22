@@ -1,8 +1,9 @@
 // module imports
-import { Op } from 'sequelize';
+import { Op, Sequelize, literal } from 'sequelize';
 
 // importing database models
 import { ProblemStatement } from '../models/problemStatements.js';
+import { User } from '../models/user.js';
 
 // importing helper functions
 import { getSkillsByIDs } from '../utils/others/skills.utils.js';
@@ -68,4 +69,42 @@ export const getProblemStatement = async (req, res, next) => {
       msg: 'statement post not found',
     });
   }
+};
+
+export const getStatementPostsForFeed = async (req, res, next) => {
+  const { userID } = res.locals.user;
+  const randomRows = await ProblemStatement.findAll({
+    attributes: [
+      ['id', 'postID'],
+      ['user_id', 'userID'],
+      ['problem_statement_text', 'statementText'],
+      ['urls', 'postURLs'],
+      ['skills_required', 'skillIDs'],
+      [literal(`"users"."first_name" || ' ' || "users"."last_name"`), 'name'],
+    ],
+    include: [
+      {
+        model: User,
+        as: 'users',
+        attributes: [
+          // ['first_name', 'firstName'],
+          // ['last_name', 'lastName'],
+        ],
+        // where: { id: Sequelize.col(ProblemStatement.user_id) },
+      },
+    ],
+    // raw: true,
+    order: Sequelize.literal('random()'),
+    limit: 20,
+  });
+  if (randomRows) {
+    res.status(200).json(randomRows);
+  } else {
+    res.status(400).json({
+      status: 'unsuccessful',
+    });
+  }
+
+  try {
+  } catch (error) {}
 };
