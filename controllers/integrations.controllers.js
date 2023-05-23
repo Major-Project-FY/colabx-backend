@@ -209,7 +209,7 @@ export const authorizeGitHubUser = async (req, res, next) => {
                             sameSite: 'none',
                             secure: false,
                             path: '/',
-                            domain: 'collabx.netlify.com',
+                            domain: 'collabx.tech',
                           }
                         );
 
@@ -232,6 +232,10 @@ export const authorizeGitHubUser = async (req, res, next) => {
                     res.cookie('st', createTokenWithExpiresIn(result, '48h'), {
                       httpOnly: true,
                       maxAge: gitHubCookieMaxAge,
+                      sameSite: 'none',
+                      secure: false,
+                      path: '/',
+                      domain: 'collabx.tech',
                     });
 
                     // sending response back to client
