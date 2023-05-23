@@ -197,8 +197,6 @@ export const authorizeGitHubUser = async (req, res, next) => {
                           'Set-Cookie'
                         );
 
-                        // res.setHeader('SameSite', 'None');
-
                         // creating session cookie
                         res.cookie(
                           'st',
@@ -206,10 +204,10 @@ export const authorizeGitHubUser = async (req, res, next) => {
                           {
                             httpOnly: true,
                             maxAge: gitHubCookieMaxAge,
-                            sameSite: 'none',
-                            secure: false,
-                            path: '/',
-                            domain: 'collabx.tech',
+                            // sameSite: 'none',
+                            // secure: false,
+                            // path: '/',
+                            // domain: 'collabx.tech',
                           }
                         );
 
@@ -232,10 +230,10 @@ export const authorizeGitHubUser = async (req, res, next) => {
                     res.cookie('st', createTokenWithExpiresIn(result, '48h'), {
                       httpOnly: true,
                       maxAge: gitHubCookieMaxAge,
-                      sameSite: 'none',
-                      secure: false,
-                      path: '/',
-                      domain: 'collabx.tech',
+                      // sameSite: 'none',
+                      // secure: false,
+                      // path: '/',
+                      // domain: 'collabx.tech',
                     });
 
                     // sending response back to client
