@@ -16,12 +16,14 @@ import { User } from '../models/user.js';
 import { gitHubUserInfo } from '../models/other/userGitHubInfo.schema.js';
 import { ProblemStatement } from '../models/problemStatements.js';
 import { Following } from '../models/following.js';
+import { Skill } from '../models/skills.js';
 
 //importing helper functions
 import {
   getfollowersWithBasicInfo,
   getfollowingsWithBasicInfo,
 } from '../utils/others/user.utils.js';
+import { getSkillsByIDs } from '../utils/others/skills.utils.js';
 
 // importing loggers
 import { warningLog } from '../services/logger/logger.js';
@@ -213,31 +215,41 @@ export const recommendUsers = async (req, res, next) => {
 };
 
 export const getUserProblemStatements = async (req, res, next) => {
-  try {
-    const statements = await ProblemStatement.findAll({
-      attributes: [
-        ['id', 'postID'],
-        ['user_id', 'userID'],
-        ['problem_statement_text', 'statementText'],
-        ['urls', 'postURLs'],
-        ['createdAt', 'postedOn'],
-      ],
-      where: {
-        user_id: { [Op.eq]: res.locals.user.userID },
-      },
-      order: [['createdAt', 'DESC']],
+  // try {
+  const statements = await ProblemStatement.findAll({
+    attributes: [
+      ['id', 'postID'],
+      ['user_id', 'userID'],
+      ['problem_statement_text', 'statementText'],
+      ['urls', 'postURLs'],
+      ['skills_required', 'skillIDs'],
+      ['createdAt', 'postedOn'],
+    ],
+    where: {
+      user_id: { [Op.eq]: res.locals.user.userID },
+    },
+    order: [['createdAt', 'DESC']],
+    raw: true,
+  });
+  const promises = statements.map(async (ele) => {
+    ele.skills = await getSkillsByIDs(ele.skillIDs, { noSkillIDs: true });
+    delete ele.skillIDs;
+  });
+  await Promise.all(promises);
+  // for (let i in statements) {
+  //   console.log(await getSkillsByIDs(statements[i].skillIDs));
+  // }
+  if (statements) {
+    res.status(200).json(statements);
+  } else {
+    res.status(404).json({
+      status: 'unsuccessful',
+      msg: 'statement post not found',
     });
-    if (statements) {
-      res.status(200).json(statements);
-    } else {
-      res.status(404).json({
-        status: 'unsuccessful',
-        msg: 'statement post not found',
-      });
-    }
-  } catch (error) {
-    res.status(500).json({ status: 'unsuccessful', msg: 'server error' });
   }
+  // } catch (error) {
+  //   res.status(500).json({ status: 'unsuccessful', msg: 'server error' });
+  // }
 };
 
 export const followUser = async (req, res, next) => {

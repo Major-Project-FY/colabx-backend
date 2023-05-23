@@ -86,17 +86,19 @@ export const getStatementPostsForFeed = async (req, res, next) => {
       {
         model: User,
         as: 'users',
-        attributes: [
-          // ['first_name', 'firstName'],
-          // ['last_name', 'lastName'],
-        ],
+        attributes: [],
         // where: { id: Sequelize.col(ProblemStatement.user_id) },
       },
     ],
-    // raw: true,
+    raw: true,
     order: Sequelize.literal('random()'),
     limit: 20,
   });
+  const promises = randomRows.map(async (ele) => {
+    ele.skills = await getSkillsByIDs(ele.skillIDs, { noSkillIDs: true });
+    delete ele.skillIDs;
+  });
+  await Promise.all(promises);
   if (randomRows) {
     res.status(200).json(randomRows);
   } else {
