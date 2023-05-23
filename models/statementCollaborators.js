@@ -41,4 +41,4 @@ StatementCollaborator.belongsTo(ProblemStatement, {
 
 StatementCollaborator.removeAttribute('id');
 
-StatementCollaborator.sync({ force: true });
+// StatementCollaborator.sync({ force: true });
