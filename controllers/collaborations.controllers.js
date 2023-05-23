@@ -2,7 +2,7 @@
 import { Op } from 'sequelize';
 
 // importing databse models
-import { statementCollaborator } from '../models/statementCollaborators.js';
+import { StatementCollaborator } from '../models/statementCollaborators.js';
 
 // API to add collaborator to a problem statement
 export const addCollaboratorToStatement = async (req, res, next) => {
@@ -29,7 +29,7 @@ export const addCollaboratorToStatement = async (req, res, next) => {
 
 export const getAllStatementCollaborators = (req, res, next) => {
   const { statementID } = req.params;
-  statementCollaborator
+  StatementCollaborator
     .findAndCountAll({
       attributes: [['collaborator_user_id', 'userIDs']],
       where: {
